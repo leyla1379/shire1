@@ -997,8 +997,7 @@ function moveProductSlide(nextIndex) {
   updateProductSlider();
 }
 function renderCart() {
-  let n = 0, total = 0;
-  for (const [id, q] of Object.entries(state.cart)) {
+  let n = 0, total = 0;  for (const [id, q] of Object.entries(state.cart)) {
     const p = id === "special" ? { price: siteContent.weekly_offer.price } : products.find(x => x.id == id);
     n += q; total += p.price * q;
   }
@@ -1997,8 +1996,7 @@ document.addEventListener("click", async (e) => {
   else if (act === "panel") panelModal();
   else if (act === "admin") adminModal();
   else if (act === "removeStoreManager") {
-    if (!isStoreOwner()) return toast("فقط مالک فروشگاه اجازه حذف مدیر را دارد.");
-    const userId = b.dataset.userId;
+    if (!isStoreOwner()) return toast("فقط مالک فروشگاه اجازه حذف مدیر را دارد.");    const userId = b.dataset.userId;
     if (!userId || !confirm(`مدیر ${b.dataset.email || ""} حذف شود؟`)) return;
     try {
       b.disabled = true;
