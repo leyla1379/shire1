@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2b1810">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex">
+<title>حساب من | شیرین‌کده پاریس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<style>
+:root{
+  --ivory:#fbf6ec;--cream:#f4e9d4;--cream-2:#ead9bb;
+  --choc:#2b1810;--choc-2:#3d2418;--choc-3:#5a3a28;
+  --caramel:#b8742f;--caramel-2:#d49a52;
+  --gold:#c9a24d;--gold-2:#e6cd85;
+  --ink:#2b1810;--muted:#7a6552;--line:rgba(91,58,40,.15);
+  --ok:#2f6b46;--danger:#a63d33;
+  --r:20px;--shadow:0 10px 34px -14px rgba(43,24,16,.35);
+  --ease:cubic-bezier(.22,.8,.24,1);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:Vazirmatn,Tahoma,sans-serif;color:var(--ink);line-height:1.8;
+  background:radial-gradient(1200px 700px at 85% -10%,#fff9ec 0,transparent 60%),radial-gradient(900px 600px at 0% 100%,#efdcb9 0,transparent 55%),var(--cream);
+  overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:var(--caramel);text-decoration:none}
+img{max-width:100%}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;top:-60px;right:12px;background:var(--choc);color:var(--ivory);padding:10px 16px;border-radius:12px;z-index:100}
+.skip:focus{top:10px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:10px}
+.hidden{display:none!important}
+bdi,.ltr{unicode-bidi:isolate}.ltr{direction:ltr;display:inline-block}
+
+/* background layers */
+#scene{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.95}
+.orb{position:fixed;z-index:0;border-radius:50%;filter:blur(60px);pointer-events:none;opacity:.5;animation:drift 18s ease-in-out infinite alternate}
+.orb.a{width:340px;height:340px;background:#e6cd85;top:-80px;left:-60px}
+.orb.b{width:300px;height:300px;background:#d49a52;bottom:-90px;right:-40px;animation-delay:-8s}
+html.gl .orb{display:none}
+@keyframes drift{to{transform:translate3d(40px,30px,0) scale(1.12)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.page{position:relative;z-index:2}
+
+/* header */
+.top{position:sticky;top:0;z-index:30;background:rgba(43,24,16,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,162,77,.35)}
+.top .in{max-width:1180px;margin:auto;padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--gold-2);font-weight:800;font-size:17px}
+.brand svg{width:30px;height:30px;flex:none}
+.top .acts{display:flex;gap:8px;align-items:center}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.65);color:var(--ink);
+  padding:10px 18px;border-radius:14px;cursor:pointer;font-weight:600;font-size:14px;transition:transform .25s var(--ease),box-shadow .25s,background .25s;min-height:44px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px -10px rgba(43,24,16,.5)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.gold{background:linear-gradient(135deg,var(--gold) 0,var(--gold-2) 55%,var(--gold) 100%);border-color:var(--gold);color:var(--choc);font-weight:800}
+.btn.dark{background:var(--choc);color:var(--ivory);border-color:var(--choc)}
+.btn.line{background:transparent;color:var(--gold-2);border-color:rgba(230,205,133,.5)}
+.btn.danger{color:var(--danger);border-color:rgba(166,61,51,.4);background:transparent}
+.btn.sm{min-height:36px;padding:6px 12px;font-size:13px;border-radius:11px}
+.btn.block{width:100%}
+
+/* shell */
+.shell{max-width:1180px;margin:auto;padding:18px 16px 60px;display:grid;grid-template-columns:1fr;gap:18px}
+.side{display:none}
+.pills{position:sticky;top:57px;z-index:20;margin:0 -16px;padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;background:linear-gradient(var(--cream) 70%,transparent)}
+.pills::-webkit-scrollbar{display:none}
+.pills a{flex:none;scroll-snap-align:center;display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.7);color:var(--choc-3);font-weight:600;font-size:14px;transition:all .3s var(--ease)}
+.pills a[aria-current=page]{background:var(--choc);color:var(--gold-2);border-color:var(--choc);box-shadow:0 6px 16px -8px rgba(43,24,16,.6)}
+.ico{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+@media(min-width:960px){
+  .shell{grid-template-columns:250px minmax(0,1fr);gap:26px;padding-top:28px}
+  .pills{display:none}
+  .side{display:block;position:sticky;top:84px;align-self:start}
+  .side nav{display:grid;gap:6px}
+  .side nav a{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;color:var(--choc-3);font-weight:600;transition:all .3s var(--ease)}
+  .side nav a:hover{background:rgba(255,255,255,.7);transform:translateX(-4px)}
+  .side nav a[aria-current=page]{background:var(--choc);color:var(--gold-2);box-shadow:var(--shadow)}
+}
+
+/* cards */
+.card{background:rgba(255,252,245,.9);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);min-width:0}
+@supports(backdrop-filter:blur(6px)){.card{background:rgba(255,252,245,.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}}
+h1,h2,h3{margin:0;line-height:1.5}
+h2{font-size:20px;font-weight:800;color:var(--choc)}
+h3{font-size:16px;font-weight:700}
+.muted{color:var(--muted)}.small{font-size:13px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.stack{display:grid;gap:16px}
+.panel{animation:rise .55s var(--ease) both}
+.panel>*{animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0)*70ms)}
+@keyframes rise{from{opacity:0;transform:translate3d(0,22px,0)}to{opacity:1;transform:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-radius:26px;padding:24px 20px;color:var(--ivory);background:linear-gradient(140deg,#2b1810 0,#46281a 55%,#2b1810 100%);border:1px solid rgba(201,162,77,.5);box-shadow:0 24px 50px -22px rgba(43,24,16,.8);display:grid;gap:22px}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 220px at 15% 0,rgba(230,205,133,.28),transparent 70%);pointer-events:none}
+.hero h1{font-size:24px;font-weight:800;color:var(--gold-2)}
+.hero p{margin:6px 0 0;color:#e8d8bd}
+.hero .eyebrow{font-size:12px;letter-spacing:.04em;color:var(--caramel-2);font-weight:700}
+@media(min-width:760px){.hero{grid-template-columns:1.2fr 1fr;align-items:center;padding:32px}.hero h1{font-size:30px}}
+
+/* 3D member card */
+.mwrap{perspective:900px;display:flex;justify-content:center}
+.mcard{--rx:0deg;--ry:0deg;position:relative;width:100%;max-width:340px;aspect-ratio:1.62;border-radius:20px;padding:18px;color:var(--ivory);
+  background:linear-gradient(145deg,#4a2c1c 0,#2b1810 60%,#1d0f09 100%);border:1px solid rgba(230,205,133,.65);
+  box-shadow:0 30px 40px -24px #000,inset 0 0 0 1px rgba(230,205,133,.12);transform:rotateX(var(--rx)) rotateY(var(--ry));transform-style:preserve-3d;transition:transform .25s var(--ease);
+  display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.mcard::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,235,180,.22) 48%,transparent 66%);transform:translateX(var(--sx,-120%));transition:transform .8s var(--ease);pointer-events:none}
+.mcard:hover::after{--sx:120%}
+.mcard .lg{display:flex;justify-content:space-between;align-items:center;transform:translateZ(30px)}
+.mcard .lg b{color:var(--gold-2);font-size:15px}
+.mcard .num{font-size:19px;letter-spacing:.14em;color:var(--gold-2);transform:translateZ(40px);font-weight:700}
+.mcard .nm{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;transform:translateZ(24px);font-size:13px;color:#e8d8bd}
+.mcard .nm b{display:block;color:var(--ivory);font-size:15px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:760px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{padding:16px;border-radius:18px;background:rgba(255,252,245,.85);border:1px solid var(--line);position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat::after{content:"";position:absolute;inset-inline-end:-18px;top:-18px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,rgba(201,162,77,.3),transparent 70%)}
+.stat b{display:block;font-size:24px;font-weight:800;color:var(--caramel);line-height:1.4}
+.stat span{font-size:13px;color:var(--muted)}
+
+/* quick links */
+.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:760px){.quick{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.quick a{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:18px;background:rgba(255,252,245,.85);border:1px solid var(--line);color:var(--choc-3);font-weight:600;font-size:14px;transition:transform .3s var(--ease),box-shadow .3s}
+.quick a:hover{transform:translateY(-5px) rotateX(6deg);box-shadow:0 16px 26px -16px rgba(43,24,16,.55)}
+.quick .ico{width:26px;height:26px;color:var(--caramel)}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent;white-space:nowrap}
+.b-pend{background:#f6e6c9;color:#8a5a1d;border-color:#e8cf9d}
+.b-prep{background:#f1deb0;color:#6d4f0a;border-color:#dfc378}
+.b-ship{background:#e6d5c6;color:#5a3a28;border-color:#cfb39b}
+.b-done{background:#dcecdf;color:var(--ok);border-color:#b7d5be}
+.b-canc{background:#f2d9d5;color:var(--danger);border-color:#e3b5ae}
+
+/* timeline */
+.tl{list-style:none;margin:18px 0 6px;padding:0;display:flex;position:relative}
+.tl::before,.tl::after{content:"";position:absolute;top:11px;height:3px;border-radius:3px;inset-inline-start:12.5%}
+.tl::before{width:75%;background:var(--cream-2)}
+.tl::after{width:calc(25% * var(--p,0));background:linear-gradient(90deg,var(--gold),var(--caramel));transition:width 1s var(--ease)}
+.tl li{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;z-index:1}
+.tl .dot{width:26px;height:26px;border-radius:50%;background:var(--ivory);border:3px solid var(--cream-2);transition:all .5s var(--ease)}
+.tl .lb{font-size:11.5px;color:var(--muted);line-height:1.5;padding:0 2px}
+.tl li.done .dot{background:var(--gold);border-color:var(--gold)}
+.tl li.now .dot{background:var(--caramel);border-color:var(--gold-2);box-shadow:0 0 0 6px rgba(201,162,77,.25)}
+.tl li.done .lb,.tl li.now .lb{color:var(--choc);font-weight:700}
+.canc-note{margin:12px 0;padding:10px 14px;border-radius:12px;background:#f2d9d5;color:var(--danger);font-weight:600}
+
+/* orders */
+.tools{display:grid;gap:10px;margin-bottom:14px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:rgba(255,255,255,.7);padding:6px 14px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:600;color:var(--choc-3);min-height:36px}
+.chip[aria-pressed=true]{background:var(--choc);color:var(--gold-2);border-color:var(--choc)}
+.olist{display:grid;gap:12px}
+.ord{display:block;color:inherit;padding:16px;border-radius:18px;background:rgba(255,252,245,.9);border:1px solid var(--line);box-shadow:var(--shadow);transition:transform .3s var(--ease),box-shadow .3s,border-color .3s}
+.ord:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 18px 30px -18px rgba(43,24,16,.6)}
+.ord .r1,.ord .r2{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ord .r2{margin-top:8px;font-size:14px}
+.ord .items{margin-top:8px;font-size:13px;color:var(--muted)}
+.ord .trk{margin-top:8px;font-size:13px;color:var(--ok);font-weight:600}
+.ord .price{font-weight:800;color:var(--choc)}
+.kv{display:grid;gap:10px}
+.kv>div{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.kv>div:last-child{border-bottom:0}
+.kv span:first-child{color:var(--muted);flex:none}
+.kv span:last-child{text-align:left;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.kv.total>div:last-child{font-size:17px;font-weight:800;color:var(--choc)}
+.grid2{display:grid;gap:16px}
+@media(min-width:860px){.grid2{grid-template-columns:1fr 1fr}}
+.trkbox{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px;border-radius:16px;background:linear-gradient(135deg,#fff7e3,#f4e3bd);border:1px dashed var(--gold)}
+.trkbox code{font-size:17px;font-weight:800;letter-spacing:.06em;direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere}
+.back{display:inline-flex;align-items:center;gap:6px;font-weight:700;margin-bottom:12px}
+.itbl{width:100%;border-collapse:collapse;font-size:14px}
+.itbl th{font-size:12px;color:var(--muted);text-align:right;font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line)}
+.itbl td{padding:10px 4px;border-bottom:1px dashed var(--line);vertical-align:top}
+.itbl td:last-child,.itbl th:last-child{text-align:left}
+
+/* forms */
+.field{display:grid;gap:6px;margin:0 0 14px;font-weight:600;font-size:14px}
+input,textarea,select{width:100%;background:#fffdf8;border:1px solid rgba(91,58,40,.28);border-radius:14px;padding:12px 14px;min-height:46px;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,162,77,.25)}
+input:disabled{background:#efe5d2;color:var(--muted)}
+textarea{resize:vertical;min-height:110px}
+.pw{position:relative}.pw input{padding-inline-end:70px}
+.pw button{position:absolute;inset-inline-end:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--caramel);font-weight:700;cursor:pointer;padding:8px;min-height:36px}
+.hint{font-size:12px;color:var(--muted);font-weight:400}
+.frm-msg{min-height:22px;font-size:13.5px;font-weight:600;margin:6px 0 0}
+.frm-msg.err,.err{color:var(--danger)}.frm-msg.ok,.ok{color:var(--ok)}
+
+/* support */
+.thread{display:grid;gap:10px;max-height:min(55vh,480px);overflow-y:auto;padding:4px 2px 10px}
+.bub{max-width:88%;padding:10px 14px;border-radius:18px;font-size:14.5px;overflow-wrap:anywhere;white-space:pre-wrap}
+.bub small{display:block;margin-top:4px;font-size:11px;opacity:.7}
+.bub.me{justify-self:start;background:var(--choc);color:var(--ivory);border-end-start-radius:6px}
+.bub.them{justify-self:end;background:#fff3d6;border:1px solid #ecd49a;border-end-end-radius:6px}
+
+/* club */
+.pts{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ring{--v:0;width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--gold) calc(var(--v)*1%),var(--cream-2) 0);position:relative;flex:none}
+.ring::before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--ivory)}
+.ring b{position:relative;font-size:24px;font-weight:800;color:var(--caramel)}
+.cpn{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;border-radius:16px;border:1px dashed var(--gold);background:linear-gradient(135deg,#fffaf0,#f7e8c6)}
+.cpn code{font-weight:800;font-size:17px;letter-spacing:.08em;direction:ltr;unicode-bidi:isolate}
+.cpn.off{opacity:.6;filter:grayscale(.5)}
+
+/* favorites */
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:760px){.fgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.prod{position:relative;border-radius:18px;overflow:hidden;background:rgba(255,252,245,.92);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .3s var(--ease)}
+.prod:hover{transform:translateY(-4px)}
+.prod .ph{aspect-ratio:1;background:var(--cream-2);display:grid;place-items:center;overflow:hidden}
+.prod .ph img{width:100%;height:100%;object-fit:cover}
+.prod .bd{padding:10px 12px 12px;display:grid;gap:4px;font-size:14px}
+.prod .bd b{font-weight:700;color:var(--choc)}
+.heart{position:absolute;top:8px;inset-inline-start:8px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,252,245,.92);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 14px -6px rgba(0,0,0,.5);transition:transform .25s var(--ease)}
+.heart:hover{transform:scale(1.12)}
+.heart svg{width:22px;height:22px;stroke:var(--caramel);fill:none;stroke-width:1.8}
+.heart[aria-pressed=true] svg{fill:var(--caramel)}
+.heart[disabled]{opacity:.6}
+
+/* misc */
+.sk{border-radius:16px;background:linear-gradient(100deg,#efe2c6 30%,#fbf3df 50%,#efe2c6 70%);background-size:220% 100%;animation:sh 1.3s linear infinite;height:84px}
+@keyframes sh{to{background-position:-220% 0}}
+.empty{text-align:center;padding:30px 12px;color:var(--muted)}
+.empty .em{font-size:38px;display:block;margin-bottom:6px}
+.errbox{padding:14px;border-radius:14px;background:#f8e3df;color:var(--danger);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+#toast{position:fixed;inset-inline:16px;bottom:max(18px,env(safe-area-inset-bottom));z-index:60;display:flex;justify-content:center;pointer-events:none}
+#toast div{pointer-events:auto;max-width:460px;padding:12px 18px;border-radius:14px;background:var(--choc);color:var(--ivory);border:1px solid var(--gold);box-shadow:0 14px 30px -10px rgba(0,0,0,.6);font-weight:600;font-size:14px;animation:rise .35s var(--ease)}
+#toast div.err{background:#5c1d17;color:#ffe6e1}
+.lo-confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--gold-2);font-size:13px}
+
+/* auth */
+.authw{position:relative;z-index:2;min-height:calc(100vh - 57px);display:grid;place-items:center;padding:24px 16px}
+.authc{width:100%;max-width:460px;padding:26px 22px;border-radius:26px;background:rgba(255,252,245,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(201,162,77,.55);box-shadow:0 34px 60px -26px rgba(43,24,16,.7);animation:rise .7s var(--ease) both}
+.authc h1{font-size:25px;font-weight:800;color:var(--choc);text-align:center}
+.authc .sub{text-align:center;color:var(--muted);margin:6px 0 18px;font-size:14px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:16px;background:var(--cream-2);margin-bottom:18px}
+.seg button{border:0;background:transparent;padding:10px;border-radius:12px;cursor:pointer;font-weight:700;color:var(--choc-3);min-height:42px;transition:all .3s var(--ease)}
+.seg button[aria-selected=true]{background:var(--choc);color:var(--gold-2);box-shadow:0 8px 16px -10px #000}
+.linkbtn{background:none;border:0;color:var(--caramel);font-weight:700;cursor:pointer;padding:6px 0;min-height:36px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">رفتن به محتوای اصلی</a>
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="orb a" aria-hidden="true"></div><div class="orb b" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="page">
+<header class="top"><div class="in">
+  <a class="brand" href="https://leyla1379.github.io/shire/" aria-label="بازگشت به فروشگاه شیرین‌کده پاریس">
+    <span>شیرین‌کده پاریس</span>
+  </a>
+  <div class="acts">
+    <a class="btn sm line" href="https://leyla1379.github.io/shire/">فروشگاه</a>
+    <span id="topLogout" class="hidden"></span>
+  </div>
+</div></header>
+
+<!-- AUTH -->
+<section id="auth" class="authw hidden" aria-labelledby="authTitle">
+  <div class="authc">
+    <h1 id="authTitle">به حساب خود خوش آمدید</h1>
+    <p class="sub">سفارش‌ها، رهگیری مرسوله و باشگاه مشتریان شیرین‌کده پاریس</p>
+    <div class="seg" role="tablist" aria-label="ورود یا ثبت‌نام">
+      <button type="button" role="tab" id="tabLogin" aria-selected="true">ورود</button>
+      <button type="button" role="tab" id="tabSignup" aria-selected="false">ثبت‌نام</button>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <label class="field">ایمیل<input id="liEmail" type="email" inputmode="email" autocomplete="email" dir="ltr" required></label>
+      <label class="field">رمز عبور<span class="pw"><input id="liPass" type="password" autocomplete="current-password" dir="ltr" required minlength="6"><button type="button" data-showpw="liPass">نمایش</button></span></label>
+      <button class="btn gold block" type="submit">ورود به حساب</button>
+      <p class="frm-msg" id="liMsg" role="status" aria-live="polite"></p>
+      <button type="button" class="linkbtn" id="toForgot">رمز عبور را فراموش کرده‌ام</button>
+    </form>
+
+    <form id="signupForm" class="hidden" novalidate>
+      <label class="field">نام و نام خانوادگی<input id="suName" autocomplete="name" maxlength="80" required></label>
+      <label class="field">نام کاربری<input id="suUser" autocomplete="username" maxlength="40" dir="ltr" required></label>
+      <label class="field">شماره تماس <span class="hint">(اختیاری)</span><input id="suPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" dir="ltr"></label>
+      <label class="field">ایمیل<input id="suEmail" type="email" inputmode="email" autocomplete="email" dir="ltr" required></label>
+      <label class="field">رمز عبور <span class="hint">(حداقل ۶ نویسه)</span><span class="pw"><input id="suPass" type="password" autocomplete="new-password" dir="ltr" required minlength="6"><button type="button" data-showpw="suPass">نمایش</button></span></label>
+      <button class="btn gold block" type="submit">ساخت حساب</button>
+      <p class="frm-msg" id="suMsg" role="status" aria-live="polite"></p>
+    </form>
+
+    <form id="forgotForm" class="hidden" novalidate>
+      <p class="muted small">ایمیل حساب خود را وارد کنید تا پیوند تغییر رمز برایتان ارسال شود.</p>
+      <label class="field">ایمیل<input id="fgEmail" type="email" inputmode="email" autocomplete="email" dir="ltr" required></label>
+      <button class="btn gold block" type="submit">ارسال پیوند بازیابی</button>
+      <p class="frm-msg" id="fgMsg" role="status" aria-live="polite"></p>
+      <button type="button" class="linkbtn" id="fromForgot">بازگشت به ورود</button>
+    </form>
+  </div>
+</section>
+
+<!-- APP -->
+<div id="app" class="shell hidden">
+  <aside class="side" aria-label="منوی حساب">
+    <div class="card">
+      <nav id="sideNav" aria-label="بخش‌های حساب"></nav>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)" id="sideLogout"></div>
+    </div>
+  </aside>
+  <div style="min-width:0">
+    <nav class="pills" id="pills" aria-label="بخش‌های حساب"></nav>
+    <main id="main" tabindex="-1"></main>
+  </div>
+</div>
+</div>
+<div id="toast" aria-live="polite" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- config (public publishable key, same as storefront) ---------- */
+var CFG={url:"https://bporqhbfwhvuzfdxfrbi.supabase.co",key:"sb_publishable_wd5snyoGuYYEnLp6URaD6A_ElOkMdnv"};
+var sb=null;
+try{ if(window.supabase) sb=window.supabase.createClient(CFG.url,CFG.key); }catch(e){ console.error(e); }
+
+/* ---------- helpers ---------- */
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+var nf=new Intl.NumberFormat("fa-IR");
+function num(n){return nf.format(Number(n)||0)}
+function money(n){return nf.format(Math.round(Number(n)||0))+" تومان"}
+function dFa(d){try{return d?new Date(d).toLocaleDateString("fa-IR",{year:"numeric",month:"long",day:"numeric"}):"—"}catch(e){return "—"}}
+function dtFa(d){try{return d?new Date(d).toLocaleString("fa-IR",{dateStyle:"medium",timeStyle:"short"}):""}catch(e){return ""}}
+function norm(s){return String(s==null?"":s).replace(/[‌‍‎‏]/g,"").replace(/ي/g,"ی").replace(/ك/g,"ک").replace(/أ/g,"ا").replace(/ٔ/g,"").replace(/\s+/g," ").trim()}
+function safeUrl(u){u=String(u||"");return /^(https:\/\/|\/|\.\/)/.test(u)?u:""}
+var reduce=window.matchMedia("(prefers-reduced-motion: reduce)");
+function toast(msg,bad){
+  var box=$("toast");box.innerHTML="";var d=document.createElement("div");d.textContent=msg;if(bad)d.className="err";box.appendChild(d);
+  clearTimeout(toast.t);toast.t=setTimeout(function(){box.innerHTML=""},bad?6500:4200);
+}
+function errMsg(e,fb){
+  console.error(e);var m=String(e&&e.message||"").toLowerCase();
+  if(m.indexOf("invalid login")>-1)return "ایمیل یا رمز عبور اشتباه است.";
+  if(m.indexOf("email not confirmed")>-1)return "ایمیل شما هنوز تأیید نشده است؛ صندوق ایمیل خود را بررسی کنید.";
+  if(m.indexOf("already registered")>-1||m.indexOf("already been registered")>-1)return "با این ایمیل قبلاً حساب ساخته شده است.";
+  if(m.indexOf("at least")>-1&&m.indexOf("password")>-1)return "رمز عبور باید حداقل ۶ نویسه باشد.";
+  if(m.indexOf("same password")>-1||m.indexOf("different from the old")>-1)return "رمز جدید باید با رمز فعلی متفاوت باشد.";
+  if(m.indexOf("rate limit")>-1||m.indexOf("too many")>-1)return "تعداد تلاش‌ها زیاد بوده است؛ کمی بعد دوباره تلاش کنید.";
+  if(m.indexOf("failed to fetch")>-1||m.indexOf("network")>-1)return "ارتباط با سرور برقرار نشد؛ اینترنت خود را بررسی کنید.";
+  if(m.indexOf("jwt")>-1||m.indexOf("session")>-1)return "نشست شما منقضی شده است؛ دوباره وارد شوید.";
+  return fb;
+}
+function busy(btn,on,label){ if(!btn)return; if(on){btn.dataset.l=btn.textContent;btn.disabled=true;if(label)btn.textContent=label}else{btn.disabled=false;if(btn.dataset.l)btn.textContent=btn.dataset.l} }
+function fieldMsg(id,text,cls){var el=$(id);if(!el)return;el.textContent=text||"";el.className="frm-msg"+(cls?" "+cls:"")}
+
+var ICON={
+ home:'<svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
+ box:'<svg class="ico" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>',
+ heart:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 21s-8-5.2-8-11a4.6 4.6 0 018-3 4.6 4.6 0 018 3c0 5.8-8 11-8 11z"/></svg>',
+ star:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+ chat:'<svg class="ico" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>',
+ user:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>',
+ shop:'<svg class="ico" viewBox="0 0 24 24"><path d="M4 7h16l-1.5 12h-13z"/><path d="M9 7a3 3 0 016 0"/></svg>',
+ back:'<svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'
+};
+var TABS=[["overview","نمای کلی","home"],["orders","سفارش‌ها","box"],["favorites","علاقه‌مندی‌ها","heart"],["club","باشگاه مشتریان","star"],["support","پشتیبانی","chat"],["profile","پروفایل","user"]];
+
+/* ---------- state ---------- */
+var STEPS=["در انتظار تأیید","در حال آماده‌سازی","ارسال شد","تحویل داده شد"],STEPS_N=STEPS.map(norm),CANCEL_N=norm("لغو شد");
+var ORDER_COLS="code,total,subtotal,discount_total,discount_details,status,payment_status,payment_provider,created_at,items,postal_tracking_code,name,phone,address";
+var S;
+function resetState(){
+  S={user:null,ready:false,profile:null,orders:null,points:null,coupons:null,redemptions:null,favs:null,products:null,messages:null,
+     err:{},filter:"all",q:"",draft:"",tab:"overview",tok:0};
+}
+resetState();
+
+/* ---------- UI shell ---------- */
+function buildNav(){
+  var side="",pills="";
+  TABS.forEach(function(t){
+    side+='<a href="#'+t[0]+'" data-nav="'+t[0]+'">'+ICON[t[2]]+'<span>'+t[1]+'</span></a>';
+    pills+='<a href="#'+t[0]+'" data-nav="'+t[0]+'">'+ICON[t[2]]+'<span>'+t[1]+'</span></a>';
+  });
+  $("sideNav").innerHTML=side;$("pills").innerHTML=pills;
+  var lo='<div data-lo><button type="button" class="btn dark block" data-act="lo-ask">خروج از حساب</button></div>';
+  $("sideLogout").innerHTML=lo;
+  $("topLogout").innerHTML='<div data-lo><button type="button" class="btn sm gold" data-act="lo-ask">خروج</button></div>';
+}
+function setNavCurrent(tab){
+  document.querySelectorAll("[data-nav]").forEach(function(a){
+    if(a.dataset.nav===tab)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");
+  });
+  var cur=document.querySelector("#pills [aria-current]");
+  if(cur&&cur.scrollIntoView)try{cur.scrollIntoView({inline:"center",block:"nearest",behavior:reduce.matches?"auto":"smooth"})}catch(e){}
+}
+function showAuth(){
+  $("app").classList.add("hidden");$("auth").classList.remove("hidden");$("topLogout").classList.add("hidden");
+  $("main").innerHTML="";document.title="ورود | شیرین‌کده پاریس";
+}
+function showApp(){
+  $("auth").classList.add("hidden");$("app").classList.remove("hidden");$("topLogout").classList.remove("hidden");
+}
+
+/* ---------- routing ---------- */
+function parseHash(){
+  var h=decodeURIComponent((location.hash||"").replace(/^#/,""));var p=h.split("/");
+  var tab=TABS.some(function(t){return t[0]===p[0]})?p[0]:"overview";
+  return {tab:tab,sub:p[1]||""};
+}
+function route(){
+  if(!S.user){return}
+  var r=parseHash();S.tab=r.tab;setNavCurrent(r.tab);
+  var t=TABS.filter(function(x){return x[0]===r.tab})[0];
+  document.title=t[1]+" | شیرین‌کده پاریس";
+  var m=$("main");
+  m.innerHTML='<div class="panel" data-panel="'+r.tab+'"></div>';
+  var p=m.firstChild;
+  var fn={overview:vOverview,orders:vOrders,favorites:vFavorites,club:vClub,support:vSupport,profile:vProfile}[r.tab];
+  fn(p,r.sub);
+  stagger(p);
+  window.scrollTo({top:0,behavior:"auto"});
+}
+function stagger(p){Array.prototype.forEach.call(p.children,function(c,i){c.style.setProperty("--i",i)})}
+window.addEventListener("hashchange",function(){ if(S.user) route(); });
+
+/* ---------- data loading ---------- */
+function q(builder){ return builder.then(function(r){ if(r.error)throw r.error; return r.data; }); }
+function loadCore(){
+  var uid=S.user.id,tok=S.tok;
+  var jobs=[
+    q(sb.from("profiles").select("id,full_name,username,phone,email,member_number,is_active,created_at").eq("id",uid).maybeSingle()),
+    q(sb.from("orders").select(ORDER_COLS).eq("user_id",uid).order("created_at",{ascending:false}).limit(200)),
+    q(sb.from("club_points").select("points,updated_at").eq("user_id",uid).maybeSingle())
+  ];
+  return Promise.allSettled(jobs).then(function(r){
+    if(tok!==S.tok)return;
+    var keys=["profile","orders","points"];
+    r.forEach(function(x,i){
+      if(x.status==="fulfilled"){S[keys[i]]=x.value||(keys[i]==="orders"?[]:null);S.err[keys[i]]=false}
+      else{console.error(x.reason);S.err[keys[i]]=true;if(keys[i]==="orders")S.orders=null}
+    });
+  });
+}
+function loadOrders(){
+  S.orders=null;S.err.orders=false;
+  return q(sb.from("orders").select(ORDER_COLS).eq("user_id",S.user.id).order("created_at",{ascending:false}).limit(200))
+    .then(function(d){S.orders=d||[]}).catch(function(e){console.error(e);S.err.orders=true});
+}
+function loadMessages(){
+  var tok=S.tok;
+  return q(sb.from("support_messages").select("id,sender_role,message,created_at").eq("user_id",S.user.id).order("created_at",{ascending:true}).limit(500))
+    .then(function(d){if(tok!==S.tok)return;S.messages=d||[];S.err.messages=false}).catch(function(e){console.error(e);S.err.messages=true});
+}
+function loadClub(){
+  var uid=S.user.id,tok=S.tok;
+  return Promise.allSettled([
+    q(sb.from("club_points").select("points,updated_at").eq("user_id",uid).maybeSingle()),
+    q(sb.from("club_coupons").select("id,code,discount_type,discount_value,expires_at,active,created_at").eq("user_id",uid).order("created_at",{ascending:false}).limit(100)),
+    q(sb.from("coupon_redemptions").select("id,redeemed_at,coupons(code,title)").eq("user_id",uid).order("redeemed_at",{ascending:false}).limit(50))
+  ]).then(function(r){
+    if(tok!==S.tok)return;
+    if(r[0].status==="fulfilled"){S.points=r[0].value||null}
+    S.coupons=r[1].status==="fulfilled"?(r[1].value||[]):null;
+    S.redemptions=r[2].status==="fulfilled"?(r[2].value||[]):null;
+    S.err.club=(r[1].status!=="fulfilled");
+    r.forEach(function(x){if(x.status==="rejected")console.error(x.reason)});
+  });
+}
+function loadFavs(){
+  var uid=S.user.id,tok=S.tok;
+  return Promise.allSettled([
+    q(sb.from("customer_favorites").select("product_id,created_at").eq("user_id",uid).order("created_at",{ascending:false})),
+    q(sb.from("product_catalog").select("id,cat,name,note,price,c,image_url,active,sort_order").eq("active",true).order("sort_order",{ascending:true}))
+  ]).then(function(r){
+    if(tok!==S.tok)return;
+    S.err.favs=(r[0].status!=="fulfilled"||r[1].status!=="fulfilled");
+    S.favs=r[0].status==="fulfilled"?(r[0].value||[]):null;
+    S.products=r[1].status==="fulfilled"?(r[1].value||[]):null;
+    r.forEach(function(x){if(x.status==="rejected")console.error(x.reason)});
+  });
+}
+
+/* ---------- display helpers ---------- */
+function displayName(){
+  var m=(S.user&&S.user.user_metadata)||{},p=S.profile||{};
+  return p.full_name||m.full_name||p.username||m.username||(S.user&&S.user.email?S.user.email.split("@")[0]:"")||"مشتری عزیز";
+}
+function badge(status){
+  var n=norm(status||STEPS[0]),c="b-pend";
+  if(n===STEPS_N[1])c="b-prep";else if(n===STEPS_N[2])c="b-ship";else if(n===STEPS_N[3])c="b-done";else if(n===CANCEL_N)c="b-canc";
+  return '<span class="badge '+c+'">'+esc(status||STEPS[0])+'</span>';
+}
+function timeline(status){
+  var n=norm(status||STEPS[0]);
+  if(n===CANCEL_N)return '<div class="canc-note">این سفارش لغو شده است.</div>';
+  var i=STEPS_N.indexOf(n);if(i<0)return "";
+  return '<ol class="tl" style="--p:0" data-p="'+i+'" aria-label="مراحل سفارش">'+STEPS.map(function(s,k){
+    return '<li class="'+(k<i?"done":k===i?"now":"")+'"'+(k===i?' aria-current="step"':'')+'><span class="dot"></span><span class="lb">'+esc(s)+'</span></li>';
+  }).join("")+'</ol>';
+}
+function animateTimeline(root){
+  root.querySelectorAll(".tl[data-p]").forEach(function(t){
+    var v=t.getAttribute("data-p");
+    if(reduce.matches){t.style.setProperty("--p",v)}else{requestAnimationFrame(function(){requestAnimationFrame(function(){t.style.setProperty("--p",v)})})}
+  });
+}
+function countUp(root){
+  root.querySelectorAll("[data-count]").forEach(function(el){
+    var end=Number(el.getAttribute("data-count"))||0,money_=el.hasAttribute("data-money");
+    var fmt=function(v){return money_?money(v):num(v)};
+    if(reduce.matches||end===0){el.textContent=fmt(end);return}
+    var t0=performance.now(),dur=900;
+    (function step(t){var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);el.textContent=fmt(end*e);if(k<1)requestAnimationFrame(step)})(t0);
+  });
+}
+function itemsOf(o){return Array.isArray(o.items)?o.items:[]}
+function itemName(i){return (i&&(i.name||i.title))||"محصول"}
+function itemQty(i){var q_=Number(i&&(i.qty!=null?i.qty:i.quantity));return isFinite(q_)&&q_>0?q_:1}
+function itemPrice(i){var p=Number(i&&(i.price!=null?i.price:i.unit_price));return isFinite(p)&&i&&(i.price!=null||i.unit_price!=null)?p:null}
+function itemsSummary(o){
+  var it=itemsOf(o);if(!it.length)return "جزئیات اقلام ثبت نشده است";
+  var s=it.slice(0,2).map(function(i){return esc(itemName(i))+" × "+num(itemQty(i))}).join("، ");
+  return s+(it.length>2?" و "+num(it.length-2)+" مورد دیگر":"");
+}
+var PAY={unpaid:"پرداخت‌نشده",pending:"در انتظار پرداخت",paid:"پرداخت‌شده",failed:"پرداخت ناموفق",refunded:"بازگشت وجه"};
+function errBox(msg,act){return '<div class="errbox"><span>'+esc(msg)+'</span><button type="button" class="btn sm" data-act="'+act+'">تلاش دوباره</button></div>'}
+function skel(n){var s="";for(var i=0;i<n;i++)s+='<div class="sk"></div>';return '<div class="stack">'+s+'</div>'}
+
+/* ---------- views ---------- */
+function memberCard(){
+  var p=S.profile||{};var no=p.member_number||"—";
+  var active=p.is_active!==false;
+  return '<div class="mwrap"><div class="mcard" id="mcard" aria-label="کارت عضویت">'+
+    '<div class="lg"><b>شیرین‌کده پاریس</b><span class="small">'+(active?"عضو باشگاه":"عضویت غیرفعال")+'</span></div>'+
+    '<div class="num ltr">'+esc(no)+'</div>'+
+    '<div class="nm"><div><span>دارنده کارت</span><b>'+esc(displayName())+'</b></div><div style="text-align:left"><span>عضویت از</span><b style="font-size:13px">'+esc(dFa((S.profile&&S.profile.created_at)||(S.user&&S.user.created_at)))+'</b></div></div>'+
+  '</div></div>';
+}
+function vOverview(p){
+  var first=String(displayName()).split(" ")[0];
+  p.innerHTML='<section class="hero" aria-label="خوش‌آمدگویی"><div><span class="eyebrow">حساب مشتری</span><h1>سلام '+esc(first)+'، خوش آمدید</h1><p>سفارش‌ها، رهگیری مرسوله و امتیازهای باشگاه شما در یک جا.</p><div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn gold" href="#orders">سفارش‌های من</a><a class="btn line" href="https://leyla1379.github.io/shire/">ادامه خرید</a></div></div>'+memberCard()+'</section>'+
+    '<section id="ovStats" aria-label="خلاصه حساب"></section><section id="ovLast"></section>'+
+    '<nav class="quick" aria-label="دسترسی سریع"><a href="#orders">'+ICON.box+'سفارش‌ها</a><a href="#favorites">'+ICON.heart+'علاقه‌مندی‌ها</a><a href="#club">'+ICON.star+'باشگاه</a><a href="#support">'+ICON.chat+'پشتیبانی</a><a href="https://leyla1379.github.io/shire/">'+ICON.shop+'فروشگاه</a></nav>';
+  bindTilt(p);
+  paintOverview(p);
+}
+function paintOverview(p){
+  var st=p.querySelector("#ovStats"),lt=p.querySelector("#ovLast");if(!st)return;
+  if(S.err.orders){st.innerHTML=errBox("دریافت سفارش‌ها ناموفق بود.","retry-core");lt.innerHTML="";return}
+  if(S.orders===null){st.innerHTML=skel(1);lt.innerHTML=skel(1);return}
+  var os=S.orders,done=os.filter(function(o){return norm(o.status)===STEPS_N[3]}).length;
+  var spend=os.filter(function(o){return norm(o.status)!==CANCEL_N}).reduce(function(s,o){return s+Number(o.total||0)},0);
+  var pts=S.points&&Number(S.points.points)||0;
+  st.innerHTML='<div class="stats"><div class="stat"><b data-count="'+os.length+'">۰</b><span>کل سفارش‌ها</span></div><div class="stat"><b data-count="'+done+'">۰</b><span>تحویل‌شده</span></div><div class="stat"><b data-count="'+spend+'" data-money style="font-size:18px">۰</b><span>مجموع خرید (بدون لغوشده‌ها)</span></div><div class="stat"><b data-count="'+pts+'">۰</b><span>امتیاز باشگاه</span></div></div>';
+  countUp(st);
+  if(!os.length){lt.innerHTML='<div class="card empty">هنوز سفارشی برای این حساب ثبت نشده است.<div style="margin-top:12px"><a class="btn gold" href="https://leyla1379.github.io/shire/">رفتن به فروشگاه</a></div></div>';return}
+  var o=os[0];
+  lt.innerHTML='<div class="card"><div class="sec-h"><h2>آخرین سفارش</h2>'+badge(o.status)+'</div><div class="small muted">کد سفارش: <bdi class="ltr">'+esc(o.code)+'</bdi> · '+esc(dFa(o.created_at))+'</div>'+timeline(o.status)+
+    (o.postal_tracking_code?'<p class="ok small" style="font-weight:700">کد رهگیری پستی: <bdi class="ltr">'+esc(o.postal_tracking_code)+'</bdi></p>':'')+
+    '<a class="btn dark" style="margin-top:10px" href="#orders/'+encodeURIComponent(o.code)+'">جزئیات و رهگیری</a></div>';
+  animateTimeline(lt);
+}
+
+function vOrders(p,sub){
+  if(sub){return vOrderDetail(p,sub)}
+  p.innerHTML='<div class="card"><div class="sec-h"><h2>سفارش‌های من</h2><button type="button" class="btn sm" data-act="reload-orders">بروزرسانی</button></div>'+
+    '<div class="tools"><label class="sr" for="oq">جستجو در سفارش‌ها</label><input id="oq" type="search" placeholder="جستجوی کد سفارش یا نام محصول…" value="'+esc(S.q)+'" autocomplete="off">'+
+    '<div class="chips" id="ochips" role="group" aria-label="فیلتر وضعیت"></div></div><div id="olist" class="olist"></div></div>';
+  paintChips(p);paintOrders(p);
+  if(S.orders===null&&!S.err.orders){loadOrders().then(function(){var pp=document.querySelector('[data-panel="orders"]');if(pp&&!parseHash().sub){paintChips(pp);paintOrders(pp)}})}
+}
+function paintChips(p){
+  var f=[["all","همه"],[STEPS[0],"در انتظار تأیید"],[STEPS[1],"آماده‌سازی"],[STEPS[2],"ارسال‌شده"],[STEPS[3],"تحویل‌شده"],["لغو شد","لغوشده"]];
+  var el=p.querySelector("#ochips");if(!el)return;
+  el.innerHTML=f.map(function(x){return '<button type="button" class="chip" data-filter="'+esc(x[0])+'" aria-pressed="'+(S.filter===x[0])+'">'+esc(x[1])+'</button>'}).join("");
+}
+function paintOrders(p){
+  var el=p.querySelector("#olist");if(!el)return;
+  if(S.err.orders){el.innerHTML=errBox("دریافت سفارش‌ها ناموفق بود.","reload-orders");return}
+  if(S.orders===null){el.innerHTML=skel(3);return}
+  var qq=norm(S.q).toLowerCase();
+  var list=S.orders.filter(function(o){
+    if(S.filter!=="all"&&norm(o.status)!==norm(S.filter))return false;
+    if(!qq)return true;
+    if(String(o.code||"").toLowerCase().indexOf(qq)>-1)return true;
+    return itemsOf(o).some(function(i){return norm(itemName(i)).toLowerCase().indexOf(qq)>-1});
+  });
+  if(!S.orders.length){el.innerHTML='<div class="empty">هنوز سفارشی ثبت نکرده‌اید.<div style="margin-top:12px"><a class="btn gold" href="https://leyla1379.github.io/shire/">رفتن به فروشگاه</a></div></div>';return}
+  if(!list.length){el.innerHTML='<div class="empty">سفارشی با این فیلتر پیدا نشد.</div>';return}
+  el.innerHTML=list.map(function(o){
+    return '<a class="ord" href="#orders/'+encodeURIComponent(o.code)+'"><div class="r1"><b>سفارش <bdi class="ltr">'+esc(o.code)+'</bdi></b>'+badge(o.status)+'</div>'+
+      '<div class="r2"><span class="muted">'+esc(dFa(o.created_at))+'</span><span class="price">'+esc(money(o.total))+'</span></div>'+
+      '<div class="items">'+itemsSummary(o)+'</div>'+
+      (o.postal_tracking_code?'<div class="trk">کد رهگیری پستی: <bdi class="ltr">'+esc(o.postal_tracking_code)+'</bdi></div>':'')+'</a>';
+  }).join("");
+}
+function vOrderDetail(p,code){
+  var tryRender=function(){
+    var o=(S.orders||[]).filter(function(x){return String(x.code)===code})[0];
+    if(S.err.orders){p.innerHTML='<a class="back" href="#orders">'+ICON.back+'بازگشت به سفارش‌ها</a>'+errBox("دریافت سفارش ناموفق بود.","reload-orders");return}
+    if(S.orders===null){p.innerHTML='<a class="back" href="#orders">'+ICON.back+'بازگشت به سفارش‌ها</a>'+skel(2);return}
+    if(!o){p.innerHTML='<a class="back" href="#orders">'+ICON.back+'بازگشت به سفارش‌ها</a><div class="card empty">سفارشی با این کد در حساب شما پیدا نشد.</div>';return}
+    var it=itemsOf(o),hasPrice=it.some(function(i){return itemPrice(i)!==null});
+    var disc=Number(o.discount_total)||0,sub_=o.subtotal!=null?Number(o.subtotal):null;
+    var codes=Array.isArray(o.discount_details)?o.discount_details.map(function(d){return d&&d.code}).filter(Boolean):[];
+    var pay=o.payment_status?PAY[o.payment_status]||o.payment_status:null;
+    p.innerHTML='<a class="back" href="#orders">'+ICON.back+'بازگشت به سفارش‌ها</a>'+
+     '<div class="card"><div class="sec-h"><div><h2>سفارش <bdi class="ltr">'+esc(o.code)+'</bdi></h2><div class="small muted">ثبت‌شده در '+esc(dtFa(o.created_at))+'</div></div>'+badge(o.status)+'</div>'+timeline(o.status)+'</div>'+
+     '<div class="card"><div class="sec-h"><h3>رهگیری مرسوله</h3><button type="button" class="btn sm" data-act="refresh-track" data-code="'+esc(o.code)+'">بروزرسانی وضعیت</button></div>'+
+       (o.postal_tracking_code?'<div class="trkbox"><div><div class="small muted">کد رهگیری پستی</div><code id="trkCode">'+esc(o.postal_tracking_code)+'</code></div><button type="button" class="btn sm dark" data-act="copy" data-text="'+esc(o.postal_tracking_code)+'">کپی کد</button></div><p class="small muted" style="margin-bottom:0">با این کد می‌توانید مرسوله را در سامانه رهگیری پست پیگیری کنید.</p>'
+         :'<p class="muted" style="margin:0">کد رهگیری پستی هنوز ثبت نشده است. پس از ارسال سفارش توسط فروشگاه، اینجا نمایش داده می‌شود.</p>')+
+       '<div class="frm-msg" id="trkMsg" role="status" aria-live="polite"></div></div>'+
+     '<div class="grid2"><div class="card"><h3 style="margin-bottom:8px">اقلام سفارش</h3>'+
+       (it.length?'<table class="itbl"><thead><tr><th>محصول</th><th>تعداد</th>'+(hasPrice?'<th>مبلغ</th>':'')+'</tr></thead><tbody>'+it.map(function(i){var pr=itemPrice(i);return '<tr><td>'+esc(itemName(i))+'</td><td>'+num(itemQty(i))+'</td>'+(hasPrice?'<td>'+(pr!==null?esc(money(pr*itemQty(i))):'—')+'</td>':'')+'</tr>'}).join("")+'</tbody></table>':'<p class="muted">اقلام این سفارش ثبت نشده است.</p>')+
+       '</div><div class="card"><h3 style="margin-bottom:8px">صورتحساب</h3><div class="kv total">'+
+       (sub_!==null?'<div><span>جمع کالاها</span><span>'+esc(money(sub_))+'</span></div>':'')+
+       (disc>0?'<div><span>تخفیف'+(codes.length?' ('+esc(codes.join("، "))+')':'')+'</span><span>'+esc(money(disc))+'-</span></div>':'')+
+       (pay?'<div><span>وضعیت پرداخت</span><span>'+esc(pay)+'</span></div>':'')+
+       '<div><span>مبلغ نهایی</span><span>'+esc(money(o.total))+'</span></div></div></div></div>'+
+     '<div class="card"><h3 style="margin-bottom:8px">اطلاعات تحویل</h3><div class="kv"><div><span>گیرنده</span><span>'+esc(o.name||"—")+'</span></div><div><span>تلفن</span><span><bdi class="ltr">'+esc(o.phone||"—")+'</bdi></span></div><div><span>آدرس</span><span>'+esc(o.address||"—")+'</span></div></div>'+
+       '<a class="btn" style="margin-top:12px" href="#support" data-act="ask-support" data-code="'+esc(o.code)+'">پیام به پشتیبانی درباره این سفارش</a></div>';
+    stagger(p);animateTimeline(p);
+  };
+  tryRender();
+  if(S.orders===null&&!S.err.orders){loadOrders().then(function(){var pp=document.querySelector('[data-panel="orders"]');if(pp&&parseHash().sub===code){vOrderDetail(pp,code)}})}
+}
+
+function vFavorites(p){
+  p.innerHTML='<div class="card"><div class="sec-h"><h2>علاقه‌مندی‌ها</h2></div><div id="favList"></div></div><div class="card"><div class="sec-h"><h2>افزودن از محصولات</h2></div><div id="favAll"></div></div>';
+  var run=function(){paintFavs(p)};
+  if(S.favs===null&&!S.err.favs){p.querySelector("#favList").innerHTML=skel(2);loadFavs().then(function(){var pp=document.querySelector('[data-panel="favorites"]');if(pp)paintFavs(pp)})}else run();
+}
+function prodCard(pr,fav){
+  var img=safeUrl(pr.image_url);
+  return '<article class="prod"><button type="button" class="heart" data-act="fav" data-id="'+esc(pr.id)+'" aria-pressed="'+fav+'" aria-label="'+(fav?"حذف از علاقه‌مندی‌ها":"افزودن به علاقه‌مندی‌ها")+': '+esc(pr.name)+'"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5.2-8-11a4.6 4.6 0 018-3 4.6 4.6 0 018 3c0 5.8-8 11-8 11z"/></svg></button>'+
+    '<a href="./product.html?id='+encodeURIComponent(pr.id)+'" style="color:inherit"><div class="ph"'+(img?'':' style="background:'+esc(/^#[0-9a-f]{3,8}$/i.test(pr.c||"")?pr.c:"#d9bf94")+'"')+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(pr.name)+'" loading="lazy" decoding="async">':'')+'</div>'+
+    '<div class="bd"><b>'+esc(pr.name)+'</b><span class="small muted">'+esc(pr.cat||"")+'</span><span style="font-weight:800;color:var(--caramel)">'+esc(money(pr.price))+'</span></div></a></article>';
+}
+function paintFavs(p){
+  var a=p.querySelector("#favList"),b=p.querySelector("#favAll");if(!a)return;
+  if(S.err.favs||S.favs===null||S.products===null){a.innerHTML=errBox("دریافت علاقه‌مندی‌ها ناموفق بود.","reload-favs");b.innerHTML="";return}
+  var ids={};S.favs.forEach(function(f){ids[String(f.product_id)]=1});
+  var mine=S.products.filter(function(x){return ids[String(x.id)]});
+  a.innerHTML=mine.length?'<div class="fgrid">'+mine.map(function(x){return prodCard(x,true)}).join("")+'</div>':'<div class="empty"><span class="em">🤍</span>هنوز محصولی را به علاقه‌مندی‌ها اضافه نکرده‌اید.<br><span class="small">از فهرست زیر محصولات مورد علاقه‌تان را انتخاب کنید.</span></div>';
+  var rest=S.products.filter(function(x){return !ids[String(x.id)]});
+  b.innerHTML=!S.products.length?'<div class="empty">در حال حاضر محصول فعالی وجود ندارد.</div>':rest.length?'<div class="fgrid">'+rest.map(function(x){return prodCard(x,false)}).join("")+'</div>':'<div class="empty">همه محصولات فعال در علاقه‌مندی‌های شما هستند.</div>';
+}
+
+function vClub(p){
+  p.innerHTML='<div class="card" id="clubTop"></div><div class="card" id="clubCpn"></div><div class="card" id="clubHist"></div>';
+  var paint=function(pp){paintClub(pp)};
+  p.querySelector("#clubTop").innerHTML=skel(1);
+  loadClub().then(function(){var pp=document.querySelector('[data-panel="club"]');if(pp)paint(pp)});
+}
+function paintClub(p){
+  var top=p.querySelector("#clubTop");if(!top)return;
+  var pts=S.points&&Number(S.points.points)||0,pr=S.profile||{};
+  top.innerHTML='<div class="sec-h"><h2>باشگاه مشتریان</h2><a class="btn sm" href="./club.html">ورود به باشگاه</a></div><div class="pts"><div class="ring" style="--v:'+Math.min(100,pts/100)+'" role="img" aria-label="امتیاز شما '+num(pts)+'"><b>'+num(pts)+'</b></div><div><div class="muted small">امتیاز فعلی شما</div><div style="font-weight:700;margin:4px 0">شماره عضویت: <bdi class="ltr">'+esc(pr.member_number||"—")+'</bdi></div><div class="small muted">'+(pr.is_active===false?"عضویت شما در حال حاضر غیرفعال است.":"عضویت فعال")+(S.points&&S.points.updated_at?" · آخرین بروزرسانی امتیاز: "+esc(dFa(S.points.updated_at)):"")+'</div></div></div>';
+  var c=p.querySelector("#clubCpn");
+  if(S.coupons===null){c.innerHTML='<h2 style="margin-bottom:12px">کدهای تخفیف شما</h2>'+errBox("دریافت کدهای تخفیف ناموفق بود.","reload-club")}
+  else if(!S.coupons.length){c.innerHTML='<h2 style="margin-bottom:12px">کدهای تخفیف شما</h2><div class="empty"><span class="em">🎁</span>فعلاً کد تخفیفی برای شما ثبت نشده است.</div>'}
+  else{
+    var now=Date.now();
+    c.innerHTML='<h2 style="margin-bottom:12px">کدهای تخفیف شما</h2><div class="stack">'+S.coupons.map(function(x){
+      var exp=x.expires_at?new Date(x.expires_at).getTime():null,expired=exp!==null&&exp<now,live=x.active&&!expired;
+      var val=x.discount_type==="percent"?num(x.discount_value)+"٪ تخفیف":money(x.discount_value)+" تخفیف";
+      return '<div class="cpn'+(live?"":" off")+'"><div><code>'+esc(x.code)+'</code><div class="small muted">'+esc(val)+(x.expires_at?" · تا "+esc(dFa(x.expires_at)):"")+' · '+(live?'<span class="ok">فعال</span>':expired?'منقضی‌شده':'غیرفعال')+'</div></div>'+(live?'<button type="button" class="btn sm dark" data-act="copy" data-text="'+esc(x.code)+'">کپی کد</button>':'')+'</div>';
+    }).join("")+'</div>';
+  }
+  var h=p.querySelector("#clubHist");
+  if(S.redemptions===null){h.innerHTML='<h2 style="margin-bottom:12px">سابقه استفاده</h2><div class="muted small">دریافت سابقه ممکن نشد.</div>'}
+  else if(!S.redemptions.length){h.innerHTML='<h2 style="margin-bottom:12px">سابقه استفاده</h2><div class="empty small">هنوز کدی استفاده نشده است.</div>'}
+  else h.innerHTML='<h2 style="margin-bottom:12px">سابقه استفاده</h2><div class="kv">'+S.redemptions.map(function(r){var cp=r.coupons||{};return '<div><span>'+esc(cp.title||cp.code||"کد تخفیف")+'</span><span>'+esc(dFa(r.redeemed_at))+'</span></div>'}).join("")+'</div>';
+}
+
+function vSupport(p){
+  p.innerHTML='<div class="card"><div class="sec-h"><h2>پشتیبانی</h2><button type="button" class="btn sm" data-act="reload-msgs">بروزرسانی پیام‌ها</button></div><div id="thread" class="thread" aria-live="polite"></div></div>'+
+    '<form class="card" id="msgForm" novalidate><label class="field" for="msgText">پیام شما</label><textarea id="msgText" maxlength="2000" placeholder="سؤال یا مشکل خود را بنویسید…" required></textarea><div class="sec-h" style="margin:8px 0 0"><span class="hint" id="msgCount">۰ / ۲۰۰۰</span><button class="btn gold" type="submit">ارسال پیام</button></div><p class="frm-msg" id="msgMsg" role="status" aria-live="polite"></p></form>';
+  var ta=p.querySelector("#msgText");if(S.draft){ta.value=S.draft;S.draft=""}
+  var upd=function(){p.querySelector("#msgCount").textContent=num(ta.value.length)+" / "+num(2000)};
+  ta.addEventListener("input",upd);upd();
+  ta.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();p.querySelector("#msgForm").requestSubmit()}});
+  paintThread(p);
+  loadMessages().then(function(){var pp=document.querySelector('[data-panel="support"]');if(pp)paintThread(pp,true)});
+}
+function paintThread(p,scroll){
+  var el=p.querySelector("#thread");if(!el)return;
+  if(S.err.messages&&S.messages===null){el.innerHTML=errBox("بارگذاری پیام‌ها ناموفق بود.","reload-msgs");return}
+  if(S.messages===null){el.innerHTML=skel(2);return}
+  if(!S.messages.length){el.innerHTML='<div class="empty"><span class="em">💬</span>هنوز پیامی ندارید. هر سؤالی دارید بنویسید.</div>';return}
+  el.innerHTML=S.messages.map(function(m){var me=m.sender_role==="user";return '<div class="bub '+(me?"me":"them")+'"><b class="small">'+(me?"شما":"پشتیبانی شیرین‌کده")+'</b><div>'+esc(m.message)+'</div><small>'+esc(dtFa(m.created_at))+'</small></div>'}).join("");
+  if(scroll)el.scrollTop=el.scrollHeight;
+}
+
+function vProfile(p){
+  var m=(S.user&&S.user.user_metadata)||{},pr=S.profile||{};
+  p.innerHTML='<form class="card" id="profForm" novalidate><div class="sec-h"><h2>اطلاعات حساب</h2></div>'+
+    '<label class="field">نام و نام خانوادگی<input id="pfName" maxlength="80" required value="'+esc(pr.full_name||m.full_name||"")+'"></label>'+
+    '<label class="field">نام کاربری<input id="pfUser" maxlength="40" dir="ltr" value="'+esc(pr.username||m.username||"")+'"></label>'+
+    '<label class="field">شماره تماس<input id="pfPhone" type="tel" inputmode="tel" maxlength="20" dir="ltr" value="'+esc(pr.phone||m.phone||"")+'"></label>'+
+    '<label class="field">ایمیل<input id="pfEmail" type="email" dir="ltr" disabled value="'+esc((S.user&&S.user.email)||"")+'"><span class="hint">ایمیل ورود از این بخش قابل تغییر نیست.</span></label>'+
+    '<button class="btn gold" type="submit">ذخیره اطلاعات</button><p class="frm-msg" id="pfMsg" role="status" aria-live="polite"></p></form>'+
+    '<form class="card" id="pwForm" novalidate><div class="sec-h"><h2>تغییر رمز عبور</h2></div>'+
+    '<label class="field">رمز عبور جدید<span class="pw"><input id="pwNew" type="password" autocomplete="new-password" dir="ltr" minlength="6" required><button type="button" data-showpw="pwNew">نمایش</button></span></label>'+
+    '<label class="field">تکرار رمز عبور جدید<input id="pwNew2" type="password" autocomplete="new-password" dir="ltr" minlength="6" required></label>'+
+    '<button class="btn dark" type="submit">تغییر رمز</button><p class="frm-msg" id="pwMsg" role="status" aria-live="polite"></p></form>'+
+    '<div class="card"><div class="sec-h"><h2>امنیت و خروج</h2></div><p class="muted small" style="margin-top:0">خروج از این دستگاه فقط نشست همین مرورگر را می‌بندد. اگر دستگاه دیگری را فراموش کرده‌اید، از همه دستگاه‌ها خارج شوید.</p><div style="display:flex;gap:10px;flex-wrap:wrap" data-lo><button type="button" class="btn dark" data-act="lo-ask">خروج از حساب</button><button type="button" class="btn danger" data-act="lo-all">خروج از همه دستگاه‌ها</button></div></div>';
+}
+
+/* ---------- member card tilt ---------- */
+function bindTilt(root){
+  var c=root.querySelector("#mcard");if(!c)return;
+  c.addEventListener("pointermove",function(e){
+    if(reduce.matches)return;var r=c.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    c.style.setProperty("--ry",(x*-18)+"deg");c.style.setProperty("--rx",(y*14)+"deg");
+  });
+  c.addEventListener("pointerleave",function(){c.style.setProperty("--ry","0deg");c.style.setProperty("--rx","0deg")});
+}
+
+/* ---------- auth flow ---------- */
+function applyUser(user){
+  if(!user){ S.tok++; var wasIn=!!S.user; resetState(); S.tok++; showAuth(); return Promise.resolve(wasIn); }
+  if(S.user&&S.user.id===user.id&&S.ready){S.user=user;return Promise.resolve()}
+  S.user=user;S.ready=false;var tok=++S.tok;
+  showApp();
+  $("main").innerHTML='<div class="panel">'+skel(3)+'</div>';
+  return loadCore().then(function(){
+    if(tok!==S.tok)return;S.ready=true;
+    if(!location.hash)history.replaceState(null,"","#overview");
+    route();
+  });
+}
+function wipePersonalUI(){ $("main").innerHTML=""; $("sideNav").innerHTML=""; $("pills").innerHTML=""; buildNav(); }
+
+function bindAuth(){
+  function sw(which){
+    var m={login:"loginForm",signup:"signupForm",forgot:"forgotForm"};
+    Object.keys(m).forEach(function(k){$(m[k]).classList.toggle("hidden",k!==which)});
+    $("tabLogin").setAttribute("aria-selected",which==="login");$("tabSignup").setAttribute("aria-selected",which==="signup");
+    $("authTitle").textContent=which==="signup"?"ساخت حساب جدید":which==="forgot"?"بازیابی رمز عبور":"به حساب خود خوش آمدید";
+  }
+  $("tabLogin").onclick=function(){sw("login")};$("tabSignup").onclick=function(){sw("signup")};
+  $("toForgot").onclick=function(){sw("forgot")};$("fromForgot").onclick=function(){sw("login")};
+  $("loginForm").addEventListener("submit",function(e){
+    e.preventDefault();var btn=e.submitter||e.target.querySelector("button[type=submit]");
+    if(!sb){fieldMsg("liMsg","اتصال به سرویس حساب برقرار نشد؛ صفحه را دوباره بارگذاری کنید.","err");return}
+    var email=$("liEmail").value.trim(),pass=$("liPass").value;
+    if(!email||!pass){fieldMsg("liMsg","ایمیل و رمز عبور را وارد کنید.","err");return}
+    fieldMsg("liMsg","");busy(btn,true,"در حال ورود…");
+    sb.auth.signInWithPassword({email:email,password:pass}).then(function(r){
+      if(r.error)throw r.error;$("liPass").value="";return applyUser(r.data.user||(r.data.session&&r.data.session.user));
+    }).then(function(){toast("با موفقیت وارد شدید.")}).catch(function(x){fieldMsg("liMsg",errMsg(x,"ورود انجام نشد؛ دوباره تلاش کنید."),"err")}).then(function(){busy(btn,false)});
+  });
+  $("signupForm").addEventListener("submit",function(e){
+    e.preventDefault();var btn=e.submitter||e.target.querySelector("button[type=submit]");
+    if(!sb){fieldMsg("suMsg","اتصال به سرویس حساب برقرار نشد؛ صفحه را دوباره بارگذاری کنید.","err");return}
+    var name=$("suName").value.trim(),user=$("suUser").value.trim(),phone=$("suPhone").value.trim(),email=$("suEmail").value.trim().toLowerCase(),pass=$("suPass").value;
+    if(!name||!user||!email){fieldMsg("suMsg","نام، نام کاربری و ایمیل را وارد کنید.","err");return}
+    if(pass.length<6){fieldMsg("suMsg","رمز عبور باید حداقل ۶ نویسه باشد.","err");return}
+    fieldMsg("suMsg","");busy(btn,true,"در حال ساخت حساب…");
+    sb.auth.signUp({email:email,password:pass,options:{emailRedirectTo:location.origin+location.pathname,data:{full_name:name,username:user,phone:phone}}}).then(function(r){
+      if(r.error)throw r.error;
+      if(r.data.session){$("suPass").value="";return applyUser(r.data.session.user).then(function(){toast("حساب شما ساخته شد.")})}
+      fieldMsg("suMsg","حساب ساخته شد؛ برای فعال‌سازی، پیوند ارسال‌شده به ایمیل خود را باز کنید.","ok");
+    }).catch(function(x){fieldMsg("suMsg",errMsg(x,"ثبت‌نام انجام نشد؛ دوباره تلاش کنید."),"err")}).then(function(){busy(btn,false)});
+  });
+  $("forgotForm").addEventListener("submit",function(e){
+    e.preventDefault();var btn=e.submitter||e.target.querySelector("button[type=submit]");
+    if(!sb){fieldMsg("fgMsg","اتصال به سرویس حساب برقرار نشد.","err");return}
+    var email=$("fgEmail").value.trim();if(!email){fieldMsg("fgMsg","ایمیل را وارد کنید.","err");return}
+    fieldMsg("fgMsg","");busy(btn,true,"در حال ارسال…");
+    sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname}).then(function(r){
+      if(r.error)throw r.error;fieldMsg("fgMsg","اگر این ایمیل در سیستم ثبت شده باشد، پیوند تغییر رمز برای آن ارسال می‌شود.","ok");
+    }).catch(function(x){fieldMsg("fgMsg",errMsg(x,"ارسال پیوند ناموفق بود."),"err")}).then(function(){busy(btn,false)});
+  });
+}
+
+/* ---------- delegated actions ---------- */
+function copyText(t){
+  if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);
+  return new Promise(function(res,rej){
+    try{var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();var ok=document.execCommand("copy");document.body.removeChild(ta);ok?res():rej(new Error("copy"))}catch(e){rej(e)}
+  });
+}
+function loAsk(scope){
+  scope.innerHTML='<div class="lo-confirm"><span>از حساب خارج می‌شوید؟</span><button type="button" class="btn sm gold" data-act="lo-yes">بله، خروج</button><button type="button" class="btn sm" data-act="lo-no">انصراف</button></div>';
+  var b=scope.querySelector("[data-act=lo-yes]");if(b)b.focus();
+}
+function loReset(){buildNav();setNavCurrent(S.tab);if(S.user&&S.tab==="profile")route()}
+function logout(scopeName){
+  if(!sb)return Promise.resolve();
+  return sb.auth.signOut(scopeName?{scope:scopeName}:undefined).then(function(r){
+    if(r&&r.error)throw r.error;
+    applyUser(null);wipePersonalUI();history.replaceState(null,"",location.pathname);toast(scopeName==="global"?"از همه دستگاه‌ها خارج شدید.":"از حساب خارج شدید.");
+  }).catch(function(e){toast(errMsg(e,"خروج انجام نشد؛ دوباره تلاش کنید."),true);loReset()});
+}
+document.addEventListener("click",function(e){
+  var sp=e.target.closest("[data-showpw]");
+  if(sp){var inp=$(sp.getAttribute("data-showpw"));var show=inp.type==="password";inp.type=show?"text":"password";sp.textContent=show?"پنهان":"نمایش";return}
+  var f=e.target.closest("[data-filter]");
+  if(f){S.filter=f.getAttribute("data-filter");var p=document.querySelector('[data-panel="orders"]');if(p){paintChips(p);paintOrders(p)}return}
+  var b=e.target.closest("[data-act]");if(!b)return;
+  var act=b.getAttribute("data-act");
+  if(act==="lo-ask"){loAsk(b.closest("[data-lo]")||b.parentNode);return}
+  if(act==="lo-no"){loReset();return}
+  if(act==="lo-yes"){b.disabled=true;logout();return}
+  if(act==="lo-all"){b.disabled=true;logout("global");return}
+  if(act==="copy"){copyText(b.getAttribute("data-text")).then(function(){toast("کپی شد.")}).catch(function(){toast("کپی خودکار ممکن نشد؛ متن را دستی انتخاب کنید.",true)});return}
+  if(act==="reload-orders"||act==="retry-core"){
+    S.orders=null;S.err.orders=false;route();
+    (act==="retry-core"?loadCore():loadOrders()).then(function(){route()});return}
+  if(act==="reload-msgs"){S.messages=null;S.err.messages=false;var pp=document.querySelector('[data-panel="support"]');if(pp)paintThread(pp);loadMessages().then(function(){var q_=document.querySelector('[data-panel="support"]');if(q_)paintThread(q_,true)});return}
+  if(act==="reload-club"){loadClub().then(function(){var q_=document.querySelector('[data-panel="club"]');if(q_)paintClub(q_)});return}
+  if(act==="reload-favs"){S.favs=null;S.err.favs=false;loadFavs().then(function(){var q_=document.querySelector('[data-panel="favorites"]');if(q_)paintFavs(q_)});return}
+  if(act==="ask-support"){S.draft="درباره سفارش "+b.getAttribute("data-code")+": ";return}
+  if(act==="refresh-track"){
+    var code=b.getAttribute("data-code");busy(b,true,"در حال بررسی…");
+    q(sb.from("orders").select(ORDER_COLS).eq("user_id",S.user.id).eq("code",code).maybeSingle()).then(function(d){
+      if(!d)throw new Error("not found");
+      var i=(S.orders||[]).findIndex(function(x){return String(x.code)===code});
+      if(i>-1)S.orders[i]=d;
+      var p=document.querySelector('[data-panel="orders"]');if(p&&parseHash().sub===code){vOrderDetail(p,code);var m=p.querySelector("#trkMsg");if(m){m.textContent="وضعیت سفارش بروزرسانی شد.";m.className="frm-msg ok"}}
+    }).catch(function(x){var m=document.getElementById("trkMsg");console.error(x);if(m){m.textContent="بروزرسانی وضعیت ناموفق بود؛ کمی بعد دوباره تلاش کنید.";m.className="frm-msg err"}busy(b,false)});
+    return}
+  if(act==="fav"){
+    var id=b.getAttribute("data-id"),isFav=b.getAttribute("aria-pressed")==="true";b.disabled=true;
+    var op=isFav?sb.from("customer_favorites").delete().eq("user_id",S.user.id).eq("product_id",id):sb.from("customer_favorites").insert({user_id:S.user.id,product_id:id});
+    op.then(function(r){
+      if(r.error)throw r.error;
+      if(isFav)S.favs=S.favs.filter(function(x){return String(x.product_id)!==id});else S.favs=[{product_id:id,created_at:new Date().toISOString()}].concat(S.favs);
+      var p=document.querySelector('[data-panel="favorites"]');if(p)paintFavs(p);
+      toast(isFav?"از علاقه‌مندی‌ها حذف شد.":"به علاقه‌مندی‌ها اضافه شد.");
+    }).catch(function(x){b.disabled=false;toast(errMsg(x,"ذخیره علاقه‌مندی ناموفق بود."),true)});
+    return}
+});
+document.addEventListener("input",function(e){
+  if(e.target.id==="oq"){S.q=e.target.value;var p=document.querySelector('[data-panel="orders"]');if(p)paintOrders(p)}
+});
+document.addEventListener("submit",function(e){
+  var id=e.target.id;
+  if(id==="msgForm"){
+    e.preventDefault();var ta=$("msgText"),btn=e.submitter||e.target.querySelector("button[type=submit]"),msg=ta.value.trim();
+    if(!msg){fieldMsg("msgMsg","متن پیام را وارد کنید.","err");return}
+    if(msg.length>2000){fieldMsg("msgMsg","پیام نباید بیشتر از ۲۰۰۰ نویسه باشد.","err");return}
+    fieldMsg("msgMsg","");busy(btn,true,"در حال ارسال…");
+    sb.from("support_messages").insert({user_id:S.user.id,sender_role:"user",message:msg}).then(function(r){
+      if(r.error)throw r.error;ta.value="";ta.dispatchEvent(new Event("input"));toast("پیام شما ارسال شد.");return loadMessages();
+    }).then(function(){var p=document.querySelector('[data-panel="support"]');if(p)paintThread(p,true)}).catch(function(x){fieldMsg("msgMsg",errMsg(x,"ارسال پیام ناموفق بود؛ متن شما حفظ شده است."),"err")}).then(function(){busy(btn,false)});
+  }
+  if(id==="profForm"){
+    e.preventDefault();var btn2=e.submitter||e.target.querySelector("button[type=submit]");
+    var v={full_name:$("pfName").value.trim(),username:$("pfUser").value.trim(),phone:$("pfPhone").value.trim()};
+    if(!v.full_name){fieldMsg("pfMsg","نام و نام خانوادگی را وارد کنید.","err");return}
+    fieldMsg("pfMsg","");busy(btn2,true,"در حال ذخیره…");
+    var authOk=false;
+    sb.auth.updateUser({data:v}).then(function(r){
+      if(r.error)throw r.error;authOk=true;S.user=r.data.user||S.user;
+      return sb.from("profiles").update(v).eq("id",S.user.id).select("id,full_name,username,phone,email,member_number,is_active,created_at").maybeSingle();
+    }).then(function(r){
+      if(r.error)throw r.error;if(r.data)S.profile=r.data;else if(S.profile)S.profile=Object.assign({},S.profile,v);
+      fieldMsg("pfMsg","اطلاعات حساب ذخیره شد.","ok");toast("اطلاعات حساب ذخیره شد.");
+    }).catch(function(x){
+      fieldMsg("pfMsg",authOk?"نام در حساب شما ذخیره شد، اما بروزرسانی پروفایل فروشگاه کامل نشد؛ دوباره ذخیره کنید.":errMsg(x,"ذخیره اطلاعات ناموفق بود."),"err");
+    }).then(function(){busy(btn2,false)});
+  }
+  if(id==="pwForm"){
+    e.preventDefault();var btn3=e.submitter||e.target.querySelector("button[type=submit]");
+    var a=$("pwNew").value,b2=$("pwNew2").value;
+    if(a.length<6){fieldMsg("pwMsg","رمز عبور باید حداقل ۶ نویسه باشد.","err");return}
+    if(a!==b2){fieldMsg("pwMsg","تکرار رمز عبور با رمز جدید یکسان نیست.","err");return}
+    fieldMsg("pwMsg","");busy(btn3,true,"در حال تغییر…");
+    sb.auth.updateUser({password:a}).then(function(r){
+      if(r.error)throw r.error;$("pwNew").value="";$("pwNew2").value="";fieldMsg("pwMsg","رمز عبور با موفقیت تغییر کرد.","ok");toast("رمز عبور تغییر کرد.");
+    }).catch(function(x){fieldMsg("pwMsg",errMsg(x,"تغییر رمز عبور ناموفق بود."),"err")}).then(function(){busy(btn3,false)});
+  }
+});
+
+/* ---------- 3D scene (Three.js, progressive enhancement) ---------- */
+var scene={on:false};
+function loadThree(){
+  return new Promise(function(res){
+    if(window.THREE)return res(true);
+    var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js";s.async=true;
+    s.onload=function(){res(!!window.THREE)};s.onerror=function(){res(false)};document.head.appendChild(s);
+  });
+}
+function startScene(){
+  var T=window.THREE,cv=$("scene");if(!T||!cv)return false;
+  var r;try{r=new T.WebGLRenderer({canvas:cv,alpha:true,antialias:window.devicePixelRatio<2,powerPreference:"low-power"})}catch(e){return false}
+  r.setClearColor(0x000000,0);
+  var sc=new T.Scene(),cam=new T.PerspectiveCamera(45,1,.1,60);cam.position.set(0,0,9);
+  sc.add(new T.AmbientLight(0xfff0dc,.9));
+  var key=new T.DirectionalLight(0xffe2b0,1.5);key.position.set(4,6,6);sc.add(key);
+  var rim=new T.PointLight(0xc9a24d,1.3,40);rim.position.set(-6,-2,5);sc.add(rim);
+  var gold=new T.MeshStandardMaterial({color:0xd4af5a,metalness:.65,roughness:.3,emissive:0x3a2a08,emissiveIntensity:.45});
+  var small=window.innerWidth<700,items=[];
+  function put(obj,depth,sp){
+    sc.add(obj);items.push({o:obj,nx:Math.random()*2-1,ny:Math.random()*2-1,z:depth,ph:Math.random()*6.28,sp:sp,rs:(Math.random()*.5+.15)*(Math.random()<.5?-1:1),s:0});
+  }
+  for(var j=0;j<(small?2:4);j++){var rg=new T.Mesh(new T.TorusGeometry(.7+Math.random()*.6,.035,16,80),gold);rg.rotation.x=Math.random()*3;put(rg,-2-Math.random()*4,.4+Math.random()*.4)}
+  var cnt=small?90:180,pos=new Float32Array(cnt*3);
+  for(var n=0;n<cnt;n++){pos[n*3]=(Math.random()*2-1)*10;pos[n*3+1]=(Math.random()*2-1)*7;pos[n*3+2]=-Math.random()*8}
+  var pg=new T.BufferGeometry();pg.setAttribute("position",new T.BufferAttribute(pos,3));
+  var dust=new T.Points(pg,new T.PointsMaterial({color:0xc9a24d,size:.045,transparent:true,opacity:.65,depthWrite:false}));sc.add(dust);
+  var hw=5,hh=4,mx=0,my=0,tmx=0,tmy=0,W=0,H=0;
+  function size(){
+    W=window.innerWidth;H=window.innerHeight;r.setPixelRatio(Math.min(window.devicePixelRatio||1,small?1.5:1.75));r.setSize(W,H,false);
+    cam.aspect=W/H;cam.updateProjectionMatrix();hh=Math.tan(cam.fov*Math.PI/360)*cam.position.z;hw=hh*cam.aspect;
+  }
+  size();window.addEventListener("resize",size);
+  window.addEventListener("pointermove",function(e){tmx=e.clientX/W-.5;tmy=e.clientY/H-.5},{passive:true});
+  function wrap(v,lo,hi){var s=hi-lo;return ((v-lo)%s+s)%s+lo}
+  var clock=new T.Clock(),raf=0;
+  function frame(still){
+    var t=clock.getElapsedTime(),sy=window.scrollY||0;
+    mx+=(tmx-mx)*.04;my+=(tmy-my)*.04;
+    cam.position.x=mx*1.2;cam.position.y=-my*.8;cam.lookAt(0,0,0);
+    items.forEach(function(it){
+      var par=1/(1+Math.abs(it.z)*.35),y=wrap(it.ny*hh+sy*.0042*par*3,-hh-1.6,hh+1.6);
+      it.o.position.set(it.nx*hw,y+Math.sin(t*it.sp+it.ph)*.22,it.z);
+      if(!still){it.o.rotation.y+=it.rs*.012;it.o.rotation.z=Math.sin(t*it.sp*.7+it.ph)*.25}
+    });
+    if(!still)dust.rotation.y=t*.012;
+    r.render(sc,cam);
+  }
+  function loop(){raf=requestAnimationFrame(loop);if(document.hidden)return;frame(false)}
+  function apply(){cancelAnimationFrame(raf);if(reduce.matches){frame(true)}else{loop()}}
+  if(reduce.addEventListener)reduce.addEventListener("change",apply);
+  window.addEventListener("scroll",function(){if(reduce.matches)frame(true)},{passive:true});
+  window.addEventListener("resize",function(){if(reduce.matches)frame(true)});
+  apply();
+  cv.addEventListener("webglcontextlost",function(ev){ev.preventDefault();cancelAnimationFrame(raf);document.documentElement.classList.remove("gl")});
+  return true;
+}
+function initScene(){
+  var saver=navigator.connection&&navigator.connection.saveData;
+  if(saver){return}
+  loadThree().then(function(ok){ if(ok&&startScene()){scene.on=true;document.documentElement.classList.add("gl")} });
+}
+
+/* ---------- boot ---------- */
+function boot(){
+  buildNav();bindAuth();
+  if(!sb){ showAuth(); fieldMsg("liMsg","اتصال به سرویس حساب برقرار نشد؛ اینترنت خود را بررسی کنید و صفحه را دوباره بارگذاری کنید.","err"); return; }
+  sb.auth.getSession().then(function(r){ return applyUser((r.data&&r.data.session&&r.data.session.user)||null); }).catch(function(e){console.error(e);showAuth()});
+  sb.auth.onAuthStateChange(function(ev,session){
+    setTimeout(function(){
+      if(ev==="SIGNED_OUT"){ if(S.user){applyUser(null);wipePersonalUI()} }
+      else if(ev==="SIGNED_IN"&&session&&session.user){ if(!S.user||S.user.id!==session.user.id)applyUser(session.user) }
+      else if(ev==="USER_UPDATED"&&session&&session.user){ S.user=session.user }
+      else if(ev==="PASSWORD_RECOVERY"&&session&&session.user){
+        applyUser(session.user).then(function(){location.hash="#profile";toast("رمز عبور جدید خود را در بخش «تغییر رمز عبور» وارد کنید.")});
+      }
+    },0);
+  });
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+window.addEventListener("load",function(){ (window.requestIdleCallback||function(f){setTimeout(f,400)})(initScene) });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="مشاهده تصاویر، توضیحات و قیمت محصول در فروشگاه شیرین‌کده پاریس.">
+<title>جزئیات محصول | شیرین‌کده پاریس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#542354,#1e0a26 60%);color:#fbf0dc;font-family:Vazirmatn,Tahoma,sans-serif;min-height:100vh}
+.gold{color:#f3c76a}.panel{background:rgba(255,240,220,.07);border:1px solid rgba(243,199,106,.22);backdrop-filter:blur(14px);border-radius:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:12px 22px;font-weight:800;background:linear-gradient(135deg,#f3c76a,#d9902a);color:#2a0f33;transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.photo{position:relative;min-height:320px;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse,rgba(243,199,106,.15),transparent 70%);border-radius:20px;overflow:hidden}.photo img{max-height:500px;width:100%;object-fit:contain;filter:drop-shadow(0 22px 18px #0005);animation:arrive .55s ease both}.gallery-nav{position:absolute;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:42px;height:42px;border:1px solid #f3c76a66;border-radius:50%;background:#1e0a26d9;color:#f3c76a;font-size:25px;line-height:1;backdrop-filter:blur(8px);cursor:pointer}.gallery-prev{right:12px}.gallery-next{left:12px}.gallery-count{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);border:1px solid #f3c76a44;border-radius:999px;background:#1e0a26d9;padding:4px 12px;color:#fbf0dc;font-size:12px;white-space:nowrap}.thumb-btn{flex:0 0 auto;transition:border-color .2s,transform .2s}.thumb-btn:hover{transform:translateY(-2px)}#thumbs{overflow-x:auto;padding:3px 2px 8px;scrollbar-width:thin;scrollbar-color:#8c6338 transparent}
+@keyframes arrive{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@media(max-width:640px){.photo{min-height:240px}.wrap{padding:12px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="sticky top-0 z-10 border-b border-amber-200/10 bg-[#1e0a26]/85 backdrop-blur-lg"><div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4"><a href="index.html" class="font-extrabold gold">شیرین‌کده پاریس</a><a href="index.html#menu" class="rounded-full border border-amber-200/30 px-4 py-2 text-sm">بازگشت به فروشگاه</a></div></header>
+<main class="wrap mx-auto max-w-6xl px-4 py-8">
+<nav class="mb-5 text-sm text-cream/60"><a href="index.html" class="hover:text-amber-200">خانه</a> / <a href="index.html#menu" class="hover:text-amber-200">محصولات</a> / <span id="crumb">جزئیات محصول</span></nav>
+<div id="status" class="panel p-8 text-center">در حال بارگذاری مشخصات محصول…</div>
+<section id="detail" class="hidden grid gap-6 lg:grid-cols-[1.1fr_1fr]">
+<div class="panel p-4 sm:p-6"><div id="gallery" class="photo"></div><div id="thumbs" class="mt-4 flex flex-wrap justify-center gap-2"></div></div>
+<div class="panel p-5 sm:p-8">
+<p class="mb-3 inline-flex rounded-full bg-amber-200/10 px-3 py-1 text-xs gold">محصول اصیل شیرین‌کده پاریس</p>
+<h1 id="name" class="text-2xl font-extrabold leading-relaxed sm:text-3xl"></h1><p id="cat" class="mt-2 text-sm text-amber-100/60"></p>
+<div class="my-6 h-px bg-amber-100/10"></div><p class="text-sm font-bold gold">توضیحات محصول</p><p id="note" class="mt-2 whitespace-pre-line text-sm leading-8 text-amber-50/80"></p>
+<div class="my-6 rounded-2xl border border-amber-200/20 bg-black/10 p-4"><p class="text-xs text-amber-50/60">قیمت فروش</p><p class="mt-1 text-3xl font-extrabold gold"><span id="price"></span> <small class="text-sm">تومان</small></p><p class="mt-2 text-xs text-amber-50/50">قیمت نهایی و موجودی مطابق اطلاعات ثبت‌شده فروشگاه نمایش داده می‌شود.</p></div>
+<div class="flex flex-wrap gap-3"><button id="add" class="btn">افزودن به سبد خرید</button><a href="index.html#menu" class="rounded-full border border-amber-200/30 px-5 py-3 text-sm font-bold">ادامه خرید</a></div>
+<p id="feedback" class="mt-4 text-sm gold" aria-live="polite"></p>
+</div></section>
+</main>
+<footer class="mt-10 border-t border-amber-100/10 py-6 text-center text-xs text-amber-50/50">© شیرین‌کده پاریس</footer>
+<script>
+const CFG={url:"https://bporqhbfwhvuzfdxfrbi.supabase.co",key:"sb_publishable_wd5snyoGuYYEnLp6URaD6A_ElOkMdnv"};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>Number(n||0).toLocaleString("fa-IR");
+const id=new URLSearchParams(location.search).get("id");
+let product=null,images=[];
+function showError(message){$("status").textContent=message;$("status").classList.remove("hidden");$("detail").classList.add("hidden")}
+let currentImageIndex=0;function selectImage(index){if(!images.length)return;currentImageIndex=((Number(index)%images.length)+images.length)%images.length;const url=images[currentImageIndex];$("gallery").innerHTML='<img src="'+esc(url)+'" alt="'+esc(product.name)+' — تصویر '+(currentImageIndex+1)+'">'+(images.length>1?'<button type="button" class="gallery-nav gallery-prev" data-gallery-step="-1" aria-label="تصویر قبلی">›</button><button type="button" class="gallery-nav gallery-next" data-gallery-step="1" aria-label="تصویر بعدی">‹</button><span class="gallery-count" aria-live="polite">'+(currentImageIndex+1)+' از '+images.length+'</span>':'');const img=$("gallery").querySelector("img");if(img)img.addEventListener("error",()=>{img.style.display="none";let msg=$("gallery").querySelector("[data-image-error]");if(!msg){msg=document.createElement("p");msg.dataset.imageError="true";msg.className="p-6 text-center text-sm gold";msg.textContent="بارگذاری این تصویر ممکن نیست";$("gallery").appendChild(msg)}});$("thumbs").querySelectorAll("button").forEach((b,i)=>{b.style.borderColor=i===currentImageIndex?"#f3c76a":"rgba(243,199,106,.2)";b.setAttribute("aria-pressed",i===currentImageIndex?"true":"false")});const active=$("thumbs").querySelector('[data-img="'+currentImageIndex+'"]');if(active)active.scrollIntoView({block:"nearest",inline:"nearest",behavior:"smooth"})}
+async function load(){
+ if(!id){showError("شناسه محصول مشخص نیست. از صفحه محصولات یک کالا را انتخاب کنید.");return}
+ try{
+  const resp=await fetch(CFG.url+"/rest/v1/product_catalog?select="+encodeURIComponent("id,cat,name,note,price,image_url,active")+"&id=eq."+encodeURIComponent(id)+"&active=eq.true&limit=1",{headers:{apikey:CFG.key,Authorization:"Bearer "+CFG.key,Accept:"application/json"}});
+  const rows=resp.ok?await resp.json():null;const error=resp.ok?null:new Error("HTTP "+resp.status);const data=Array.isArray(rows)?(rows[0]||null):null;
+  if(error)throw error;if(!data){showError("این محصول پیدا نشد یا در حال حاضر فعال نیست.");return}
+  product=data;images=Array.isArray(data.image_url)?data.image_url.filter(Boolean):[];
+  if(typeof data.image_url==="string"&&data.image_url.trim()){try{const parsed=JSON.parse(data.image_url);images=Array.isArray(parsed)?parsed.filter(Boolean):[data.image_url]}catch{images=[data.image_url]}}
+  $("status").classList.add("hidden");$("detail").classList.remove("hidden");
+  document.title=data.name+" | شیرین‌کده پاریس";$("crumb").textContent=data.name;$("name").textContent=data.name;$("cat").textContent=data.cat||"محصول فروشگاه";$("note").textContent=data.note||"برای این محصول توضیحات بیشتری ثبت نشده است.";$("price").textContent=money(data.price);
+  if(!images.length){$("gallery").innerHTML='<div class="p-8 text-center gold">تصویر محصول ثبت نشده است</div>'}
+  else{ $("thumbs").innerHTML=images.map((u,i)=>'<button type="button" class="thumb-btn h-16 w-16 overflow-hidden rounded-xl border p-1" style="border-color:rgba(243,199,106,.2)" data-img="'+i+'" aria-label="تصویر '+(i+1)+'"><img src="'+esc(u)+'" alt="" class="h-full w-full object-contain"></button>').join("");selectImage(0)}
+ }catch(e){console.error(e);showError("بارگذاری محصول ناموفق بود. اتصال اینترنت را بررسی و دوباره تلاش کنید.")}
+}
+$("thumbs").addEventListener("click",e=>{const b=e.target.closest("[data-img]");if(b)selectImage(Number(b.dataset.img))});$("gallery").addEventListener("click",e=>{const b=e.target.closest("[data-gallery-step]");if(b)selectImage(currentImageIndex+Number(b.dataset.galleryStep))});$("gallery").addEventListener("keydown",e=>{if(e.key==="ArrowLeft")selectImage(currentImageIndex+1);if(e.key==="ArrowRight")selectImage(currentImageIndex-1)});
+$("add").addEventListener("click",()=>{if(!product)return;const pending={id:String(product.id),name:product.name,price:Number(product.price)||0,addedAt:Date.now()};try{localStorage.setItem("sh_pending_product",JSON.stringify(pending));location.href="index.html?addProduct="+encodeURIComponent(product.id)+"#menu"}catch(e){$("feedback").textContent="برای افزودن به سبد خرید به صفحه فروشگاه برگردید."}});
+load();
+</script>
+</body></html>

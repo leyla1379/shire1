@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="dark">
+<title>پنل مدیریت شیرین‌کده پاریس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --plum:#1f0a1c;--aub:#33122f;--aub2:#4a1a44;--gold:#dcb870;--gold2:#f2d9a0;--cream:#f7ecd9;--caramel:#b8793e;
+  --muted:#cdb9c4;--ok:#8fd19e;--warn:#f0c36a;--bad:#ff8c8c;
+  --glass:rgba(58,22,52,.58);--line:rgba(220,184,112,.24);
+  --r:18px;--shadow:0 18px 50px rgba(8,2,8,.55);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;font-family:Vazirmatn,Tahoma,system-ui,sans-serif;color:var(--cream);
+  background:radial-gradient(1200px 700px at 85% -10%,#5a1f50 0%,transparent 60%),radial-gradient(900px 600px at -10% 110%,#6b3a1c 0%,transparent 55%),var(--plum);
+  line-height:1.7;overflow-x:hidden}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;transition:opacity .6s}
+body.in-app #bg{opacity:.45}
+.skip{position:absolute;inset-inline-start:8px;top:-60px;background:var(--gold);color:#2a0f24;padding:8px 14px;border-radius:10px;z-index:100}
+.skip:focus{top:8px}
+:focus-visible{outline:3px solid var(--gold2);outline-offset:2px;border-radius:8px}
+button,input,select,textarea{font:inherit;color:inherit}
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+@supports((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{-webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2)}}
+.btn{cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:14px;padding:.6rem 1.1rem;font-weight:500;transition:transform .2s,background .2s,box-shadow .2s;min-height:44px}
+.btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold) 55%,var(--caramel));color:#2a0f24;border:0;font-weight:700;box-shadow:0 8px 24px rgba(220,184,112,.28)}
+.btn.danger{border-color:rgba(255,140,140,.5);color:var(--bad)}
+.btn.sm{min-height:36px;padding:.3rem .8rem;font-size:.85rem;border-radius:11px}
+label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.3rem}
+.inp{width:100%;background:rgba(18,5,16,.55);border:1px solid var(--line);border-radius:12px;padding:.65rem .9rem;min-height:44px}
+.inp:focus{border-color:var(--gold)}
+textarea.inp{min-height:90px;resize:vertical}
+select.inp{appearance:auto}
+.field{margin-bottom:1rem}
+.row{display:flex;gap:.75rem;flex-wrap:wrap}.row>*{flex:1 1 140px}
+.muted{color:var(--muted)}.gold-t{color:var(--gold2)}
+.pill{display:inline-block;padding:.1rem .7rem;border-radius:99px;font-size:.78rem;border:1px solid var(--line);background:rgba(255,255,255,.06)}
+.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.num{font-feature-settings:"tnum";direction:ltr;unicode-bidi:isolate}
+
+/* login */
+#login{position:relative;z-index:2;min-height:100vh;display:grid;place-items:center;padding:24px}
+.login-card{width:min(440px,100%);padding:2.2rem 1.7rem}
+.brand{display:flex;align-items:center;gap:.8rem;margin-bottom:1.4rem}
+.logo{width:54px;height:54px;border-radius:50%;flex:none;background:radial-gradient(circle at 32% 28%,#e7a1c9 0,#7d2a5e 38%,#2e0c27 75%);box-shadow:inset -6px -8px 14px rgba(0,0,0,.45),0 8px 22px rgba(220,184,112,.3);border:1px solid var(--line)}
+h1,h2,h3{margin:0;font-weight:800}
+.login-card h1{font-size:1.5rem;background:linear-gradient(90deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.err{color:var(--bad);font-size:.9rem;min-height:1.4em;margin:.4rem 0}
+
+/* app shell */
+#app{position:relative;z-index:2;display:none;min-height:100vh}
+body.in-app #app{display:grid;grid-template-columns:272px 1fr}
+body.in-app #login{display:none}
+aside{position:sticky;top:0;height:100vh;padding:18px 14px;display:flex;flex-direction:column;gap:.4rem;border-radius:0;border-width:0 0 0 1px}
+aside .brand{padding:.4rem .6rem 1rem}
+.nav a,.nav button{display:flex;align-items:center;gap:.7rem;width:100%;text-align:right;padding:.7rem .9rem;border-radius:13px;color:var(--cream);text-decoration:none;background:none;border:0;cursor:pointer;min-height:46px}
+.nav a:hover{background:rgba(255,255,255,.07)}
+.nav a[aria-current=page]{background:linear-gradient(90deg,rgba(220,184,112,.22),rgba(220,184,112,.04));box-shadow:inset -3px 0 0 var(--gold)}
+.ico{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.badge{margin-inline-start:auto;background:var(--gold);color:#2a0f24;border-radius:99px;font-size:.72rem;font-weight:800;padding:0 .55rem;min-width:22px;text-align:center}
+main{padding:18px clamp(14px,3vw,34px) 110px;min-width:0}
+.top{display:flex;align-items:center;gap:.7rem;margin-bottom:1.3rem;padding:.7rem 1rem;position:sticky;top:10px;z-index:20}
+.top h2{font-size:1.2rem;flex:1}
+.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),var(--caramel));color:#2a0f24;font-weight:800}
+.iconbtn{position:relative;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.iconbtn .badge{position:absolute;top:-6px;inset-inline-start:-6px;margin:0}
+#menuBtn{display:none}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.card{padding:1.15rem 1.2rem;transition:transform .25s}
+.card:hover{transform:translateY(-3px)}
+.stat b{display:block;font-size:1.8rem;color:var(--gold2);line-height:1.3}
+.sec{margin:1.6rem 0 .8rem;font-size:1.05rem}
+.list{display:grid;gap:.9rem}
+.tools{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.tools .inp{flex:1 1 220px}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{cursor:pointer;border:1px solid var(--line);background:none;border-radius:99px;padding:.25rem .85rem;min-height:36px}
+.chip[aria-pressed=true]{background:var(--gold);color:#2a0f24;font-weight:700}
+.order,.prod{padding:1rem 1.1rem}
+.head{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.head .grow{flex:1}
+.items{margin:.6rem 0;padding:0;list-style:none;font-size:.9rem}
+.items li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding:.2rem 0}
+.prod{display:grid;grid-template-columns:84px 1fr;gap:1rem}
+.prod img,.ph{width:84px;height:84px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
+.ph{display:grid;place-items:center;font-size:1.8rem}
+.empty,.errbox{padding:2.2rem 1rem;text-align:center}
+.skel{height:92px;border-radius:var(--r);background:linear-gradient(100deg,rgba(255,255,255,.04) 30%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.04) 70%);background-size:200% 100%;animation:sk 1.4s linear infinite}
+@keyframes sk{to{background-position:-200% 0}}
+.split{display:grid;grid-template-columns:300px 1fr;gap:1rem}
+.thread-list button{display:block;width:100%;text-align:right;padding:.7rem .9rem;border:0;border-bottom:1px solid var(--line);background:none;cursor:pointer;min-height:54px}
+.thread-list button[aria-current=true]{background:rgba(220,184,112,.14)}
+.msgs{display:flex;flex-direction:column;gap:.5rem;max-height:52vh;overflow:auto;padding:1rem}
+.msg{max-width:82%;padding:.55rem .9rem;border-radius:16px;background:rgba(255,255,255,.08);white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.admin{align-self:flex-start;background:linear-gradient(135deg,rgba(220,184,112,.3),rgba(184,121,62,.25))}
+.msg small{display:block;color:var(--muted);font-size:.72rem}
+dialog{border:1px solid var(--line);border-radius:22px;background:#2a0f26;color:var(--cream);padding:1.4rem;width:min(560px,94vw);max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(8,2,8,.7)}
+#toasts{position:fixed;inset-inline:0;bottom:84px;display:flex;flex-direction:column;align-items:center;gap:.5rem;z-index:200;pointer-events:none}
+.toast{pointer-events:auto;background:#2a0f26;border:1px solid var(--gold);border-radius:14px;padding:.6rem 1.1rem;box-shadow:var(--shadow);animation:up .3s}
+.toast.bad{border-color:var(--bad)}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+#tabbar{display:none}
+.note{font-size:.82rem;color:var(--muted);margin:.4rem 0}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:right;padding:.55rem .6rem;border-bottom:1px solid var(--line)}
+
+@media(max-width:900px){
+  body.in-app #app{grid-template-columns:1fr}
+  aside{position:fixed;inset-block:0;inset-inline-start:0;width:min(300px,86vw);z-index:60;transform:translateX(105%);transition:transform .3s;background:#26091f;height:100dvh;overflow:auto}
+  body.menu aside{transform:none}
+  #menuBtn{display:grid}
+  #tabbar{display:flex;position:fixed;inset-inline:10px;bottom:10px;z-index:50;padding:.3rem;justify-content:space-around;padding-bottom:calc(.3rem + env(safe-area-inset-bottom))}
+  #tabbar a,#tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;font-size:.7rem;gap:0;color:var(--cream);text-decoration:none;background:none;border:0;padding:.3rem;min-height:48px;cursor:pointer;border-radius:12px}
+  #tabbar [aria-current=page]{background:rgba(220,184,112,.2);color:var(--gold2)}
+  .split{grid-template-columns:1fr}
+  .prod{grid-template-columns:64px 1fr}.prod img,.ph{width:64px;height:64px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#view">پرش به محتوا</a>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<!-- ورود -->
+<section id="login" aria-labelledby="loginTitle">
+  <form class="glass login-card" id="loginForm" novalidate>
+    <div class="brand"><div class="logo" aria-hidden="true"></div><div><h1 id="loginTitle">شیرین‌کده پاریس</h1><div class="muted">ورود به پنل مدیریت</div></div></div>
+    <div class="field"><label for="em">ایمیل</label><input class="inp" id="em" type="email" dir="ltr" autocomplete="username" required></div>
+    <div class="field"><label for="pw">رمز عبور</label><input class="inp" id="pw" type="password" dir="ltr" autocomplete="current-password" required></div>
+    <div class="err" id="loginErr" role="alert"></div>
+    <button class="btn gold" style="width:100%" id="loginBtn" type="submit">ورود</button>
+    <a class="btn" href="https://shirinkadeh-paris.ir/" style="display:block;width:100%;margin-top:.65rem;text-align:center;text-decoration:none">← بازگشت به سایت اصلی</a>
+    <p class="note">دسترسی فقط برای مدیران ثبت‌شده در پایگاه داده است و در سمت سرور بررسی می‌شود.</p>
+  </form>
+</section>
+
+<!-- برنامه -->
+<div id="app">
+  <aside class="glass" id="side" aria-label="منوی اصلی">
+    <div class="brand"><div class="logo" aria-hidden="true"></div><div><h3>شیرین‌کده پاریس</h3><div class="muted" style="font-size:.8rem">پنل مدیریت</div></div></div>
+    <nav class="nav" id="nav"></nav>
+    <div style="margin-top:auto" class="nav"><button id="signOut2" type="button"><svg class="ico" viewBox="0 0 24 24"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 8l4 4-4 4M20 12H9"/></svg>خروج</button></div>
+  </aside>
+  <main>
+    <header class="top glass">
+      <button class="iconbtn" id="menuBtn" type="button" aria-label="باز کردن منو"><svg class="ico" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <h2 id="title" tabindex="-1">نمای کلی</h2>
+      <a class="btn sm" href="https://shirinkadeh-paris.ir/" style="text-decoration:none;white-space:nowrap">↩ بازگشت به سایت</a>
+      <button class="iconbtn" id="bell" type="button" aria-label="اعلان‌ها"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7M10 20a2 2 0 0 0 4 0"/></svg><span class="badge" id="bellN" hidden>0</span></button>
+      <button class="iconbtn" id="profile" type="button" aria-label="پروفایل مدیر"><span class="avatar" id="avatar">م</span></button>
+    </header>
+    <div id="view" tabindex="-1" aria-live="polite"></div>
+  </main>
+  <nav class="glass" id="tabbar" aria-label="ناوبری موبایل"></nav>
+</div>
+
+<dialog id="dlg"></dialog>
+<dialog id="dlgC"><form method="dialog" id="cForm"><h3 id="cT"></h3><p id="cB" class="muted"></p><div id="cReqWrap" hidden class="field"><label for="cReq" id="cReqL"></label><input class="inp" id="cReq" dir="ltr" autocomplete="off"></div><div class="row" style="margin-top:1rem"><button class="btn" value="no" type="submit">انصراف</button><button class="btn danger" id="cOk" value="yes" type="submit">تأیید</button></div></form></dialog>
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script defer>
+"use strict";
+/* ───────── پیکربندی (فقط کلید عمومی؛ هیچ کلید service_role در این فایل نیست) ───────── */
+const CFG={url:"https://bporqhbfwhvuzfdxfrbi.supabase.co",key:"sb_publishable_wd5snyoGuYYEnLp6URaD6A_ElOkMdnv"};
+const STATUSES=["در انتظار تأیید","در حال آماده‌سازی","ارسال شد","تحویل داده شد","لغو شد"];
+const CATS=["انگور","خرما","سایر"];
+const $=(s,r=document)=>r.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nf=new Intl.NumberFormat("fa-IR");
+const num=v=>nf.format(Number(v)||0);
+const dt=v=>{try{return v?new Date(v).toLocaleString("fa-IR",{dateStyle:"medium",timeStyle:"short"}):"—"}catch(e){return"—"}};
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const IC={
+ home:'<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
+ box:'<path d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/>',
+ cart:'<path d="M3 4h2l2.4 11h10.2l2-8H6.2M9 20a1 1 0 1 0 0 .01M17 20a1 1 0 1 0 0 .01"/>',
+ users:'<path d="M16 19v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20 19v-1a3 3 0 0 0-2.2-2.9M16 4.2a3.5 3.5 0 0 1 0 6.6"/>',
+ chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+ tag:'<path d="M3 12V4h8l10 10-8 8zM7.5 8.5h.01"/>',
+ star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'
+};
+const ico=n=>`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+const VIEWS=[
+ {id:"overview",t:"نمای کلی",i:"home"},{id:"orders",t:"سفارش‌ها",i:"cart"},{id:"products",t:"محصولات",i:"box"},
+ {id:"customers",t:"مشتریان",i:"users"},{id:"support",t:"پشتیبانی",i:"chat"},{id:"discounts",t:"تخفیف‌ها",i:"tag"},{id:"loyalty",t:"باشگاه مشتریان",i:"star"}
+];
+
+/* ───────── ابزارهای رابط ───────── */
+function toast(msg,bad){const t=document.createElement("div");t.className="toast"+(bad?" bad":"");t.textContent=msg;$("#toasts").append(t);setTimeout(()=>t.remove(),bad?6000:3200)}
+function fail(e,pre){console.error(e);toast((pre?pre+": ":"")+(e&&e.message?e.message:"خطای ناشناخته"),true)}
+function confirmBox({title,body,okText="تأیید",requireText=""}){
+  return new Promise(res=>{
+    const d=$("#dlgC");$("#cT").textContent=title;$("#cB").textContent=body;$("#cOk").textContent=okText;
+    const w=$("#cReqWrap"),inp=$("#cReq");inp.value="";w.hidden=!requireText;
+    if(requireText){$("#cReqL").textContent="برای تأیید، این متن را دقیقاً وارد کنید: "+requireText}
+    const ok=$("#cOk");const upd=()=>{ok.disabled=!!requireText&&inp.value.trim()!==requireText};upd();inp.oninput=upd;
+    d.onclose=()=>res(d.returnValue==="yes");d.returnValue="no";d.showModal();
+  });
+}
+function openDlg(html){const d=$("#dlg");d.innerHTML=html;d.showModal();return d}
+const closeDlg=()=>{const d=$("#dlg");if(d.open)d.close()};
+const skeleton=()=>'<div class="list" aria-busy="true"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
+const empty=(t)=>`<div class="glass empty"><div style="font-size:2rem" aria-hidden="true">🍇</div><p class="muted">${esc(t)}</p></div>`;
+const errBox=(e,retry)=>`<div class="glass errbox" role="alert"><p class="bad" style="color:var(--bad)">${esc(e&&e.message||e)}</p><p class="note">اگر پیام دسترسی/سیاست امنیتی (RLS/permission) است، یعنی پایگاه داده این عملیات را برای حساب شما مجاز نکرده است.</p><button class="btn" data-act="${retry}">تلاش دوباره</button></div>`;
+const must=async p=>{const r=await p;if(r.error)throw r.error;return r.data};
+
+/* ───────── Supabase و وضعیت ───────── */
+let sb=null,me=null;
+const S={orders:null,products:null,users:null,messages:null,stats:null,discounts:null};
+let view="overview",token=0;
+
+function makeClient(){
+  if(!window.supabase||!window.supabase.createClient)return null;
+  return window.supabase.createClient(CFG.url,CFG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+}
+async function isManager(){
+  const {data,error}=await sb.rpc("store_is_manager");
+  if(error)throw error;
+  return data===true;
+}
+async function enter(user){
+  /* دسترسی در پایگاه داده بررسی می‌شود؛ رابط فقط نمایش می‌دهد. */
+  let ok=false;
+  try{ok=await isManager()}catch(e){$("#loginErr").textContent="بررسی دسترسی انجام نشد: "+(e.message||e);await sb.auth.signOut();return false}
+  if(!ok){await sb.auth.signOut();$("#loginErr").textContent="این حساب مدیر فروشگاه نیست.";return false}
+  me=user;document.body.classList.add("in-app");
+  $("#avatar").textContent=((user.email||"م")[0]||"م").toUpperCase();
+  buildNav();route();refreshBadges();return true;
+}
+async function signOut(){try{await sb.auth.signOut()}catch(e){}
+  me=null;for(const k in S)S[k]=null;document.body.classList.remove("in-app","menu");$("#pw").value="";$("#loginErr").textContent="";$("#em").focus()}
+
+$("#loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();const err=$("#loginErr"),btn=$("#loginBtn");err.textContent="";
+  const email=$("#em").value.trim(),password=$("#pw").value;
+  if(!email||!password){err.textContent="ایمیل و رمز عبور را وارد کنید.";return}
+  if(!sb){err.textContent="کتابخانه Supabase بارگذاری نشد؛ اتصال اینترنت را بررسی کنید.";return}
+  btn.disabled=true;btn.textContent="در حال ورود…";
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email,password});
+    if(error){err.textContent="ایمیل یا رمز عبور درست نیست.";return}
+    await enter(data.user);
+  }catch(x){err.textContent="خطا در ورود: "+(x.message||x)}
+  finally{btn.disabled=false;btn.textContent="ورود"}
+});
+["signOut2"].forEach(i=>$("#"+i).addEventListener("click",signOut));
+
+/* ───────── ناوبری ───────── */
+function buildNav(){
+  $("#nav").innerHTML=VIEWS.map(v=>`<a href="#/${v.id}" data-v="${v.id}">${ico(v.i)}<span>${v.t}</span><span class="badge" data-b="${v.id}" hidden></span></a>`).join("");
+  const main=["overview","orders","products","support"].map(id=>VIEWS.find(v=>v.id===id));
+  $("#tabbar").innerHTML=main.map(v=>`<a href="#/${v.id}" data-v="${v.id}">${ico(v.i)}${v.t}</a>`).join("")+`<button type="button" id="moreBtn">${ico("users")}بیشتر</button>`;
+  $("#moreBtn").onclick=()=>document.body.classList.toggle("menu");
+}
+$("#menuBtn").onclick=()=>document.body.classList.toggle("menu");
+$("#view").addEventListener("click",()=>document.body.classList.remove("menu"));
+window.addEventListener("hashchange",()=>{if(me)route()});
+function route(){
+  const id=(location.hash.match(/^#\/(\w+)/)||[])[1];
+  view=VIEWS.some(v=>v.id===id)?id:"overview";
+  document.querySelectorAll("[data-v]").forEach(a=>{a.toggleAttribute("aria-current",a.dataset.v===view);if(a.dataset.v===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  document.body.classList.remove("menu");
+  $("#title").textContent=VIEWS.find(v=>v.id===view).t;
+  render();
+}
+async function render(){
+  const my=++token,box=$("#view");box.innerHTML=skeleton();
+  try{const html=await R[view]();if(my!==token)return;box.innerHTML=html;if(R[view+"Post"])R[view+"Post"]()}
+  catch(e){if(my!==token)return;box.innerHTML=errBox(e,"reload")}
+}
+
+/* ───────── بارگذاری داده (فقط جدول‌ها و ستون‌های تأییدشده) ───────── */
+const L={
+  orders:async(f)=>S.orders&&!f?S.orders:(S.orders=await must(sb.from("orders").select("*").order("created_at",{ascending:false}).limit(200))),
+  products:async(f)=>S.products&&!f?S.products:(S.products=await must(sb.from("product_catalog").select("id,cat,name,note,price,c,image_url,active,sort_order").order("sort_order",{ascending:true}))),
+  messages:async(f)=>S.messages&&!f?S.messages:(S.messages=await must(sb.from("support_messages").select("id,user_id,sender_role,message,created_at").order("created_at",{ascending:true}).limit(500))),
+  users:async(f)=>S.users&&!f?S.users:(S.users=await must(sb.rpc("admin_list_users"))||[]),
+  discounts:async(f)=>S.discounts&&!f?S.discounts:(S.discounts=await must(sb.from("product_discounts").select("*").order("updated_at",{ascending:false})))
+};
+async function refreshBadges(){
+  try{
+    const [o,m]=await Promise.all([L.orders(true),L.messages(true)]);
+    const pending=o.filter(x=>x.status===STATUSES[0]).length,waiting=threads(m).filter(t=>t.last.sender_role==="user").length;
+    setBadge("orders",pending);setBadge("support",waiting);
+    const n=pending+waiting,b=$("#bellN");b.textContent=num(n);b.hidden=!n;
+  }catch(e){console.warn("نشان‌ها به‌روز نشد",e)}
+}
+function setBadge(id,n){document.querySelectorAll(`[data-b="${id}"]`).forEach(b=>{b.textContent=num(n);b.hidden=!n})}
+const userName=id=>{const u=(S.users||[]).find(x=>(x.user_id||x.id)===id);return u?(u.full_name||u.email||"مشتری"):("مشتری "+String(id||"").slice(0,6))};
+function threads(msgs){const map=new Map();for(const m of msgs){if(!map.has(m.user_id))map.set(m.user_id,[]);map.get(m.user_id).push(m)}
+  return [...map].map(([id,list])=>({id,list,last:list[list.length-1]})).sort((a,b)=>new Date(b.last.created_at)-new Date(a.last.created_at))}
+
+/* ───────── نماها ───────── */
+const R={};
+const statusPill=s=>`<span class="pill ${s===STATUSES[4]?"bad":s===STATUSES[3]?"ok":"warn"}">${esc(s)}</span>`;
+
+R.overview=async()=>{
+  const [st,od]=await Promise.allSettled([must(sb.rpc("admin_dashboard_stats")),L.orders(true)]);
+  let h="";
+  if(st.status==="fulfilled"){S.stats=st.value;const s=st.value||{};
+    const lab={total_visits:"کل بازدیدها",unique_visitors:"بازدیدکنندگان یکتا",registered_users:"کاربران ثبت‌نام‌شده"};
+    const cards=Object.keys(s).filter(k=>typeof s[k]==="number").map(k=>`<div class="glass card stat"><span class="muted">${esc(lab[k]||k)}</span><b class="num">${num(s[k])}</b></div>`).join("");
+    h+=`<h3 class="sec">آمار سایت</h3><div class="grid">${cards||""}</div>`;
+    if(Array.isArray(s.top_pages)&&s.top_pages.length)h+=`<h3 class="sec">پربازدیدترین صفحه‌ها</h3><div class="glass card"><table class="t"><tbody>${s.top_pages.slice(0,8).map(p=>`<tr><td class="num">${esc(p.path||p.page||"")}</td><td class="num">${num(p.visits??p.count??0)}</td></tr>`).join("")}</tbody></table></div>`;
+  }else h+=`<div class="glass card"><p class="note">آمار بازدید در دسترس نیست: ${esc(st.reason&&st.reason.message||"")}</p></div>`;
+  if(od.status==="fulfilled"){const o=od.value,live=o.filter(x=>x.status!==STATUSES[4]);
+    const rev=live.reduce((a,x)=>a+Number(x.total||0),0),disc=live.reduce((a,x)=>a+Number(x.discount_total||0),0);
+    h+=`<h3 class="sec">سفارش‌ها</h3><div class="grid">
+      <div class="glass card stat"><span class="muted">تعداد سفارش‌ها</span><b>${num(o.length)}</b></div>
+      <div class="glass card stat"><span class="muted">در انتظار تأیید</span><b>${num(o.filter(x=>x.status===STATUSES[0]).length)}</b></div>
+      <div class="glass card stat"><span class="muted">جمع سفارش‌های غیرلغوشده (تومان)</span><b class="num">${num(rev)}</b></div>
+      <div class="glass card stat"><span class="muted">جمع تخفیف‌ها (تومان)</span><b class="num">${num(disc)}</b></div></div>
+      <p class="note">ارقام بر پایه ${num(o.length)} سفارش بارگذاری‌شده (حداکثر ۲۰۰ مورد اخیر) است و وضعیت پرداخت را نشان نمی‌دهد.</p>`;
+    if(!o.length)h+=empty("هنوز سفارشی ثبت نشده است.");
+  }else h+=errBox(od.reason,"reload");
+  return h;
+};
+
+/* سفارش‌ها */
+let oFilter="",oStatus="";
+R.orders=async()=>{
+  const o=await L.orders(true);
+  return `<div class="tools"><input class="inp" id="oq" type="search" placeholder="جست‌وجو: کد، نام، تلفن…" aria-label="جست‌وجوی سفارش" value="${esc(oFilter)}">
+   <div class="chips" role="group" aria-label="فیلتر وضعیت"><button class="chip" aria-pressed="${!oStatus}" data-act="ost" data-s="">همه</button>${STATUSES.map(s=>`<button class="chip" aria-pressed="${oStatus===s}" data-act="ost" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div></div>
+   <div class="list" id="oList">${ordersHtml(o)}</div>`;
+};
+R.ordersPost=()=>{$("#oq").addEventListener("input",e=>{oFilter=e.target.value;$("#oList").innerHTML=ordersHtml(S.orders)})};
+function ordersHtml(all){
+  const q=oFilter.trim().toLowerCase();
+  const rows=all.filter(o=>(!oStatus||o.status===oStatus)&&(!q||[o.code,o.name,o.phone].some(x=>String(x||"").toLowerCase().includes(q))));
+  if(!rows.length)return empty(all.length?"سفارشی با این فیلتر پیدا نشد.":"هنوز سفارشی ثبت نشده است.");
+  return rows.map(o=>{const items=Array.isArray(o.items)?o.items:[];
+   return `<article class="glass order" data-code="${esc(o.code)}">
+    <div class="head"><b class="num">${esc(o.code)}</b>${statusPill(o.status)}<span class="muted grow">${dt(o.created_at)}</span><b class="gold-t">${num(o.total)} تومان</b></div>
+    <p style="margin:.4rem 0">${esc(o.name)} · <span class="num">${esc(o.phone)}</span></p>
+    <p class="muted" style="margin:.2rem 0;font-size:.9rem">${esc(o.address)}</p>
+    <ul class="items">${items.map(i=>`<li><span>${esc(i&&i.name||"—")} × ${num(i&&i.qty||1)}</span><span class="num">${num(i&&i.price||0)}</span></li>`).join("")}</ul>
+    ${Number(o.discount_total)?`<p class="note">تخفیف: ${num(o.discount_total)} تومان${o.subtotal?` · جمع پیش از تخفیف: ${num(o.subtotal)}`:""}</p>`:""}
+    <p class="note">پرداخت: ${esc(o.payment_status||"—")}${o.payment_provider?" · "+esc(o.payment_provider):""}</p>
+    <div class="row" style="align-items:end">
+      <div><label>وضعیت</label><select class="inp" data-f="status">${STATUSES.map(s=>`<option ${s===o.status?"selected":""}>${esc(s)}</option>`).join("")}</select></div>
+      <div><label>کد رهگیری پستی</label><input class="inp num" data-f="track" dir="ltr" maxlength="64" value="${esc(o.postal_tracking_code||"")}"></div>
+      <div style="flex:0 0 auto;display:flex;gap:.5rem"><button class="btn gold sm" data-act="osave">ذخیره</button><button class="btn danger sm" data-act="odel">حذف</button></div>
+    </div></article>`}).join("");
+}
+
+/* محصولات */
+R.products=async()=>{
+  const p=await L.products(true);
+  return `<div class="tools"><button class="btn gold" data-act="pnew">+ محصول جدید</button><span class="muted">${num(p.length)} محصول</span></div>
+  <div class="list">${p.length?p.map(prodHtml).join(""):empty("محصولی ثبت نشده است.")}</div>`;
+};
+const prodHtml=p=>`<article class="glass prod" data-id="${esc(p.id)}">
+  ${p.image_url&&/^https:\/\//.test(p.image_url)?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:`<div class="ph" style="background:${/^#[0-9a-f]{3,8}$/i.test(p.c)?p.c:"#4a1a2c"}" aria-hidden="true">🍇</div>`}
+  <div><div class="head"><b class="grow">${esc(p.name)}</b><span class="pill">${esc(p.cat)}</span>${p.active?'<span class="pill ok">فعال</span>':'<span class="pill bad">غیرفعال</span>'}</div>
+  <p class="muted" style="margin:.2rem 0;font-size:.9rem">${esc(p.note)}</p><b class="gold-t">${num(p.price)} تومان</b>
+  <div style="margin-top:.6rem;display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn sm" data-act="pedit">ویرایش</button><button class="btn sm" data-act="ptoggle">${p.active?"غیرفعال‌سازی":"فعال‌سازی"}</button><button class="btn danger sm" data-act="pdel">حذف</button></div></div></article>`;
+function prodForm(p){
+  const n=!p;p=p||{id:"",cat:CATS[0],name:"",note:"",price:0,c:"#4a1a2c",image_url:"",active:true,sort_order:(S.products||[]).length+1};
+  openDlg(`<form id="pf" novalidate><h3>${n?"محصول جدید":"ویرایش محصول"}</h3>
+   <div class="field"><label for="pn">نام</label><input class="inp" id="pn" required maxlength="120" value="${esc(p.name)}"></div>
+   <div class="row"><div class="field"><label for="pc">دسته</label><select class="inp" id="pc">${CATS.map(c=>`<option ${c===p.cat?"selected":""}>${c}</option>`).join("")}</select></div>
+   <div class="field"><label for="pp">قیمت (تومان)</label><input class="inp num" id="pp" type="number" min="0" step="1" required value="${esc(p.price)}"></div>
+   <div class="field"><label for="ps">ترتیب نمایش</label><input class="inp num" id="ps" type="number" step="1" value="${esc(p.sort_order)}"></div></div>
+   <div class="field"><label for="pd">توضیحات</label><textarea class="inp" id="pd" maxlength="600">${esc(p.note)}</textarea></div>
+   <div class="row"><div class="field"><label for="pcol">رنگ کارت</label><input class="inp" id="pcol" type="color" value="${/^#[0-9a-f]{6}$/i.test(p.c)?p.c:"#4a1a2c"}"></div>
+   <div class="field"><label for="pa">وضعیت</label><select class="inp" id="pa"><option value="1" ${p.active?"selected":""}>فعال</option><option value="0" ${p.active?"":"selected"}>غیرفعال</option></select></div></div>
+   <div class="field"><label for="pi">نشانی تصویر (https)</label><input class="inp" id="pi" dir="ltr" value="${esc(p.image_url||"")}"></div>
+   <div class="field"><label for="pf2">یا آپلود تصویر (حداکثر ۱۰ مگابایت)</label><input class="inp" id="pf2" type="file" accept="image/*"></div>
+   <div class="err" id="pe" role="alert"></div>
+   <div class="row"><button class="btn" type="button" id="pcancel">انصراف</button><button class="btn gold" type="submit">ذخیره</button></div></form>`);
+  $("#pcancel").onclick=closeDlg;
+  $("#pf").onsubmit=async e=>{
+    e.preventDefault();const err=$("#pe");err.textContent="";
+    const price=Number($("#pp").value),name=$("#pn").value.trim();
+    if(!name||!Number.isFinite(price)||price<0||!Number.isInteger(price)){err.textContent="نام و قیمت عدد صحیح معتبر وارد کنید.";return}
+    let url=$("#pi").value.trim();if(url&&!/^https:\/\//i.test(url)){err.textContent="نشانی تصویر باید با https شروع شود.";return}
+    const btn=e.submitter||$("#pf button[type=submit]");btn.disabled=true;
+    try{
+      const id=p.id||String(Date.now()),f=$("#pf2").files[0];
+      if(f)url=await uploadImg(f,id);
+      const row={id,cat:$("#pc").value,name,note:$("#pd").value.trim(),price,c:$("#pcol").value,image_url:url||null,active:$("#pa").value==="1",sort_order:Number($("#ps").value)||0};
+      if(!CATS.includes(row.cat))throw new Error("دسته نامعتبر است.");
+      await must(sb.from("product_catalog").upsert(row));
+      toast("محصول ذخیره شد.");closeDlg();await L.products(true);render();
+    }catch(x){err.textContent=x.message||String(x)}finally{btn.disabled=false}
+  };
+}
+async function uploadImg(file,id){
+  if(!file.type.startsWith("image/"))throw new Error("فایل تصویری معتبر انتخاب کنید.");
+  if(file.size>10*1024*1024)throw new Error("حجم تصویر باید کمتر از ۱۰ مگابایت باشد.");
+  const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error("خواندن تصویر ناموفق بود."));i.src=URL.createObjectURL(file)});
+  const cv=document.createElement("canvas");cv.width=cv.height=800;const x=cv.getContext("2d");
+  const k=Math.min(800/img.width,800/img.height),w=Math.round(img.width*k),h=Math.round(img.height*k);x.drawImage(img,(800-w)/2,(800-h)/2,w,h);
+  const blob=await new Promise(r=>cv.toBlob(r,"image/webp",.88));if(!blob)throw new Error("تبدیل تصویر انجام نشد.");
+  const path=`${id}-${Date.now()}.webp`;
+  const {error}=await sb.storage.from("product-images").upload(path,blob,{contentType:"image/webp",upsert:true});if(error)throw error;
+  return sb.storage.from("product-images").getPublicUrl(path).data.publicUrl;
+}
+
+/* مشتریان */
+let cQ="";
+R.customers=async()=>{
+  const u=await L.users(true);
+  return `<div class="tools"><input class="inp" id="cq" type="search" placeholder="جست‌وجوی نام یا ایمیل" aria-label="جست‌وجوی مشتری" value="${esc(cQ)}"><span class="muted">${num(u.length)} کاربر</span></div><div class="glass card" style="overflow:auto"><div id="cList">${custHtml(u)}</div></div>
+  <p class="note">این فهرست از تابع پایگاه داده‌ی <span dir="ltr">admin_list_users</span> می‌آید؛ فقط مدیران باید به آن دسترسی داشته باشند.</p>`;
+};
+R.customersPost=()=>{$("#cq").addEventListener("input",e=>{cQ=e.target.value;$("#cList").innerHTML=custHtml(S.users)})};
+function custHtml(u){
+  const q=cQ.trim().toLowerCase(),r=u.filter(x=>!q||[x.full_name,x.email,x.phone].some(v=>String(v||"").toLowerCase().includes(q)));
+  if(!r.length)return empty("کاربری پیدا نشد.");
+  return `<table class="t"><thead><tr><th>نام</th><th>ایمیل</th><th>تلفن</th><th>عضویت</th></tr></thead><tbody>${r.map(x=>`<tr><td>${esc(x.full_name||"—")}</td><td class="num">${esc(x.email||"—")}</td><td class="num">${esc(x.phone||"—")}</td><td>${dt(x.created_at)}</td></tr>`).join("")}</tbody></table>`;
+}
+
+/* پشتیبانی */
+let selThread=null;
+R.support=async()=>{
+  const [m]=await Promise.all([L.messages(true),L.users().catch(()=>[])]);
+  const t=threads(m);if(!t.length)return empty("پیامی از مشتریان دریافت نشده است.");
+  if(!t.some(x=>x.id===selThread))selThread=t[0].id;
+  return `<div class="split"><div class="glass thread-list" role="list">${t.map(x=>`<button role="listitem" data-act="thr" data-u="${esc(x.id)}" aria-current="${x.id===selThread}"><b>${esc(userName(x.id))}</b>${x.last.sender_role==="user"?' <span class="pill warn">بدون پاسخ</span>':""}<div class="muted" style="font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.last.message)}</div></button>`).join("")}</div>
+  <div class="glass"><div class="msgs" id="msgs">${threadHtml(t.find(x=>x.id===selThread))}</div>
+  <form id="rf" style="padding:1rem;border-top:1px solid var(--line)"><label for="rt">پاسخ به ${esc(userName(selThread))}</label><textarea class="inp" id="rt" maxlength="2000" required></textarea><div class="err" id="re" role="alert"></div><button class="btn gold" type="submit">ارسال پاسخ</button></form></div></div>`;
+};
+const threadHtml=t=>t.list.map(m=>`<div class="msg ${m.sender_role==="admin"?"admin":""}">${esc(m.message)}<small>${m.sender_role==="admin"?"شما":"مشتری"} · ${dt(m.created_at)}</small></div>`).join("");
+R.supportPost=()=>{
+  const b=$("#msgs");if(b)b.scrollTop=b.scrollHeight;
+  const f=$("#rf");if(f)f.onsubmit=async e=>{e.preventDefault();const t=$("#rt").value.trim(),err=$("#re");err.textContent="";
+    if(!t){err.textContent="متن پاسخ را وارد کنید.";return}
+    const btn=e.submitter;btn.disabled=true;
+    try{await must(sb.from("support_messages").insert({user_id:selThread,sender_role:"admin",message:t}));toast("پاسخ ارسال شد.");await L.messages(true);render();refreshBadges()}
+    catch(x){err.textContent=x.message||String(x)}finally{btn.disabled=false}};
+};
+
+/* تخفیف‌ها */
+R.discounts=async()=>{
+  const [d,p]=await Promise.all([L.discounts(true),L.products()]);
+  const nm=id=>(p.find(x=>String(x.id)===String(id))||{}).name||id;
+  return `<div class="tools"><button class="btn gold" data-act="dnew">+ کد تخفیف جدید</button></div>
+  <div class="list">${d.length?d.map(x=>`<article class="glass order" data-pid="${esc(x.product_id)}"><div class="head"><b class="num">${esc(x.code)}</b><span class="pill">${x.discount_type==="percent"?num(x.discount_value)+"٪":num(x.discount_value)+" تومان"}</span>${x.active?'<span class="pill ok">فعال</span>':'<span class="pill bad">غیرفعال</span>'}<span class="muted grow">${esc(nm(x.product_id))}</span><button class="btn danger sm" data-act="ddel">حذف</button></div></article>`).join(""):empty("کد تخفیفی ثبت نشده است.")}</div>`;
+};
+function discForm(){
+  const p=S.products||[];
+  openDlg(`<form id="df" novalidate><h3>کد تخفیف محصول</h3>
+  <div class="field"><label for="dc">کد (حروف انگلیسی بزرگ، عدد، - و _)</label><input class="inp num" id="dc" dir="ltr" maxlength="32" required></div>
+  <div class="row"><div class="field"><label for="dt">نوع</label><select class="inp" id="dt"><option value="percent">درصدی</option><option value="fixed">مبلغ ثابت</option></select></div>
+  <div class="field"><label for="dv">مقدار</label><input class="inp num" id="dv" type="number" min="1" step="1" required></div></div>
+  <fieldset class="field" style="border:1px solid var(--line);border-radius:12px"><legend class="muted">محصولات</legend>${p.map(x=>`<label style="display:flex;gap:.5rem;align-items:center;color:var(--cream)"><input type="checkbox" name="dp" value="${esc(x.id)}"> ${esc(x.name)}</label>`).join("")||'<span class="muted">ابتدا محصول اضافه کنید.</span>'}</fieldset>
+  <div class="err" id="de" role="alert"></div><div class="row"><button class="btn" type="button" id="dcancel">انصراف</button><button class="btn gold" type="submit">ذخیره</button></div></form>`);
+  $("#dcancel").onclick=closeDlg;
+  $("#df").onsubmit=async e=>{e.preventDefault();const err=$("#de");err.textContent="";
+    const code=$("#dc").value.trim().toUpperCase(),type=$("#dt").value,val=Number($("#dv").value),ids=[...document.querySelectorAll('input[name=dp]:checked')].map(i=>i.value);
+    if(!/^[A-Z0-9_-]{3,32}$/.test(code)||!ids.length){err.textContent="کد معتبر وارد و حداقل یک محصول انتخاب کنید.";return}
+    if(!Number.isFinite(val)||val<=0||(type==="percent"&&val>100)){err.textContent="مقدار تخفیف معتبر نیست.";return}
+    const btn=e.submitter;btn.disabled=true;
+    try{for(const id of ids)await must(sb.from("product_discounts").upsert({product_id:id,code,discount_type:type,discount_value:val,active:true,updated_at:new Date().toISOString()},{onConflict:"product_id"}));
+      toast("کد تخفیف ذخیره شد.");closeDlg();await L.discounts(true);render()}
+    catch(x){err.textContent=x.message||String(x)}finally{btn.disabled=false}};
+}
+
+/* باشگاه مشتریان (فقط خواندنی) */
+R.loyalty=async()=>{
+  const [pts,cps]=await Promise.allSettled([must(sb.from("club_points").select("user_id,points").order("points",{ascending:false}).limit(100)),must(sb.from("club_coupons").select("id,user_id,code,discount_type,discount_value,expires_at,active").order("created_at",{ascending:false}).limit(100))]);
+  await L.users().catch(()=>0);
+  const sec=(t,r,f)=>`<h3 class="sec">${t}</h3>`+(r.status==="fulfilled"?(r.value.length?`<div class="glass card" style="overflow:auto">${f(r.value)}</div>`:empty("موردی ثبت نشده است.")):errBox(r.reason,"reload"));
+  return `<p class="note">این بخش فقط‌خواندنی است؛ تغییر امتیاز و کوپن بعد از بررسی تابع‌های مربوطه در پایگاه داده اضافه می‌شود.</p>`
+   +sec("امتیاز مشتریان",pts,v=>`<table class="t"><tbody>${v.map(x=>`<tr><td>${esc(userName(x.user_id))}</td><td class="num">${num(x.points)}</td></tr>`).join("")}</tbody></table>`)
+   +sec("کوپن‌های باشگاه",cps,v=>`<table class="t"><tbody>${v.map(x=>`<tr><td class="num">${esc(x.code)}</td><td>${esc(userName(x.user_id))}</td><td>${x.discount_type==="percent"?num(x.discount_value)+"٪":num(x.discount_value)+" تومان"}</td><td>${x.active?"فعال":"غیرفعال"}</td></tr>`).join("")}</tbody></table>`);
+};
+
+/* ───────── رویدادها ───────── */
+document.addEventListener("click",async e=>{
+  const b=e.target.closest("[data-act]");if(!b||!me)return;const act=b.dataset.act;
+  try{
+    if(act==="reload")return render();
+    if(act==="ost"){oStatus=b.dataset.s;return render()}
+    if(act==="thr"){selThread=b.dataset.u;return render()}
+    if(act==="pnew")return prodForm(null);
+    if(act==="dnew")return discForm();
+    const art=b.closest("article");
+    if(act==="osave"){const code=art.dataset.code,status=$('[data-f=status]',art).value,tr=$('[data-f=track]',art).value.trim();
+      b.disabled=true;try{await must(sb.from("orders").update({status,postal_tracking_code:tr||null}).eq("code",code).select("code"));toast("سفارش به‌روز شد.");await L.orders(true);render();refreshBadges()}finally{b.disabled=false}return}
+    if(act==="odel"){const code=art.dataset.code;if(!await confirmBox({title:"حذف سفارش",body:"این سفارش برای همیشه حذف می‌شود و قابل بازگشت نیست.",okText:"حذف سفارش",requireText:code}))return;
+      await must(sb.from("orders").delete().eq("code",code).select("code"));toast("سفارش حذف شد.");await L.orders(true);render()}
+    if(act==="pedit"){prodForm((S.products||[]).find(x=>String(x.id)===art.dataset.id))}
+    if(act==="ptoggle"){const p=(S.products||[]).find(x=>String(x.id)===art.dataset.id);await must(sb.from("product_catalog").update({active:!p.active}).eq("id",p.id).select("id"));await L.products(true);render()}
+    if(act==="pdel"){const p=(S.products||[]).find(x=>String(x.id)===art.dataset.id);
+      if(!await confirmBox({title:"حذف محصول",body:`«${p.name}» از فروشگاه حذف می‌شود. برای مخفی کردن موقت، «غیرفعال‌سازی» را بزنید.`,okText:"حذف محصول",requireText:"حذف"}))return;
+      await must(sb.from("product_catalog").delete().eq("id",p.id).select("id"));toast("محصول حذف شد.");await L.products(true);render()}
+    if(act==="ddel"){const pid=art.dataset.pid;if(!await confirmBox({title:"حذف کد تخفیف",body:"این کد تخفیف حذف می‌شود.",okText:"حذف"}))return;
+      await must(sb.from("product_discounts").delete().eq("product_id",pid).select("product_id"));toast("کد تخفیف حذف شد.");await L.discounts(true);render()}
+  }catch(x){fail(x,"عملیات ناموفق")}
+});
+$("#bell").onclick=async()=>{
+  await refreshBadges();const o=(S.orders||[]).filter(x=>x.status===STATUSES[0]),t=threads(S.messages||[]).filter(x=>x.last.sender_role==="user");
+  const d=openDlg(`<h3>اعلان‌ها</h3>${o.length||t.length?"":'<p class="muted">اعلان تازه‌ای نیست.</p>'}
+   ${o.length?`<h4>سفارش‌های در انتظار تأیید (${num(o.length)})</h4><ul>${o.slice(0,8).map(x=>`<li><span class="num">${esc(x.code)}</span> — ${esc(x.name)}</li>`).join("")}</ul><a class="btn sm" href="#/orders" id="n1">مشاهده سفارش‌ها</a>`:""}
+   ${t.length?`<h4>گفت‌وگوهای بدون پاسخ (${num(t.length)})</h4><ul>${t.slice(0,8).map(x=>`<li>${esc(userName(x.id))}</li>`).join("")}</ul><a class="btn sm" href="#/support" id="n2">رفتن به پشتیبانی</a>`:""}
+   <div style="margin-top:1rem"><button class="btn" id="nclose">بستن</button></div>`);
+  d.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeDlg));$("#nclose").onclick=closeDlg;
+};
+$("#profile").onclick=()=>{openDlg(`<h3>پروفایل مدیر</h3><p class="num" dir="ltr">${esc(me.email||"")}</p><p class="note">دسترسی شما توسط پایگاه داده تأیید شده است.</p><div class="row"><button class="btn" id="pc1">بستن</button><button class="btn danger" id="pc2">خروج</button></div>`);
+  $("#pc1").onclick=closeDlg;$("#pc2").onclick=()=>{closeDlg();signOut()}};
+
+/* ───────── صحنه سه‌بعدی (ملایم و بهینه) ───────── */
+function scene(){
+  const cv=$("#bg");if(!window.THREE){return}
+  let r;try{r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:"low-power"})}catch(e){return}
+  r.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+  const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,1,.1,100);cam.position.z=15;
+  sc.add(new THREE.AmbientLight(0x7a3466,.9));
+  const k=new THREE.PointLight(0xffd79a,2.3,70);k.position.set(7,7,11);sc.add(k);
+  const rim=new THREE.PointLight(0xc2508f,1.6,70);rim.position.set(-9,-5,7);sc.add(rim);
+  const mats=[0x4a1236,0x6d1f4f,0x8a3a1e,0xb8793e].map(c=>new THREE.MeshPhysicalMaterial({color:c,roughness:.22,metalness:.1,clearcoat:1,clearcoatRoughness:.12}));
+  const geo=new THREE.SphereGeometry(1,28,28),g=new THREE.Group(),it=[];
+  for(let i=0;i<22;i++){const m=new THREE.Mesh(geo,mats[i%4]),s=.3+Math.random()*.75;m.scale.set(s,s*1.28,s);
+    m.position.set((Math.random()-.5)*26,(Math.random()-.5)*15,(Math.random()-.5)*10-2);m.userData={p:Math.random()*6.28,v:.25+Math.random()*.4,y:m.position.y};g.add(m);it.push(m)}
+  /* خوشه انگور */
+  const gr=new THREE.Group();let n=0;for(let row=0;row<5;row++)for(let c=0;c<5-row;c++){const m=new THREE.Mesh(geo,mats[1]);m.scale.setScalar(.5);m.position.set((c-(4-row)/2)*.95,-row*.85,(row%2)*.2);gr.add(m);n++}
+  gr.position.set(7.5,1.5,-1);gr.rotation.z=-.25;g.add(gr);sc.add(g);
+  const pg=new THREE.BufferGeometry(),pa=new Float32Array(240);for(let i=0;i<240;i++)pa[i]=(Math.random()-.5)*30;pg.setAttribute("position",new THREE.BufferAttribute(pa,3));
+  sc.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xdcb870,size:.07,transparent:true,opacity:.7})));
+  let mx=0,my=0,raf=0;
+  const size=()=>{r.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();if(reduce)r.render(sc,cam)};
+  addEventListener("resize",size);size();
+  if(reduce){r.render(sc,cam);return}
+  addEventListener("pointermove",e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5},{passive:true});
+  const loop=t=>{t/=1000;it.forEach(m=>{m.position.y=m.userData.y+Math.sin(t*m.userData.v+m.userData.p)*.6});g.rotation.y=Math.sin(t*.1)*.12;
+    cam.position.x+=(mx*2-cam.position.x)*.03;cam.position.y+=(-my*1.4-cam.position.y)*.03;cam.lookAt(0,0,0);r.render(sc,cam);raf=requestAnimationFrame(loop)};
+  raf=requestAnimationFrame(loop);
+  document.addEventListener("visibilitychange",()=>{cancelAnimationFrame(raf);if(!document.hidden)raf=requestAnimationFrame(loop)});
+}
+
+/* ───────── راه‌اندازی ───────── */
+async function boot(){
+  sb=makeClient();
+  try{scene()}catch(e){console.warn("صحنه سه‌بعدی اجرا نشد",e)}
+  if(!sb){$("#loginErr").textContent="کتابخانه Supabase بارگذاری نشد؛ اتصال اینترنت را بررسی کنید.";return}
+  sb.auth.onAuthStateChange(ev=>{if(ev==="SIGNED_OUT"&&me)signOut()});
+  const {data}=await sb.auth.getSession();
+  if(data&&data.session)await enter(data.session.user);
+}
+addEventListener("load",boot);
+</script>
+</body>
+</html>
