@@ -2096,9 +2096,9 @@ document.addEventListener("submit", async (e) => {
       ].join("، ");
       const code = await DB.createOrder({ user_id:me?.id, name:v.name.trim(), phone:v.phone.trim(), address:fullAddress, subtotal, discount_total:saving, discount_details:cartDiscountLines(), total:finalTotal, items:orderItems });
       if (!sb) throw new Error("برای پرداخت آنلاین، اتصال پایگاه داده باید فعال باشد.");
-      const paymentResponse = await fetch(CFG.url + "/functions/v1/zibal", {
+      const paymentResponse = await fetch("https://pay.shirinkadeh-paris.ir/zibal-request.php", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "apikey": CFG.key },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order_code: code })
       });
       const paymentData = await paymentResponse.json().catch(() => ({}));
