@@ -719,7 +719,7 @@ tailwind.config = { theme: { extend: {
         {id:"1792780130028",cat:"سایر",name:"معجون چهار مغز",note:"وزن 400 گرم",price:590000,image_url:"https://gppcrkyxthonpeyeuoyg.supabase.co/storage/v1/object/public/product-images/1792780130028-1792780222621.webp"},
         {id:"1792949881464",cat:"سایر",name:"ترافل خرمایی",note:"باکس 22 عددی",price:690000,image_url:"https://gppcrkyxthonpeyeuoyg.supabase.co/storage/v1/object/public/product-images/1792949881464-1792949884302.webp"}
       ];
-      const key = "sb_publishable_wd5snyoGuYYEnLp6URaD6A_ElOkMdnv";
+      const key = "sb_publishable_omUQDvSI_P94T_RFhA8mcg_1lkSVFJ0";
       const endpoint = "https://bporqhbfwhvuzfdxfrbi.supabase.co/rest/v1/product_catalog?select=id,cat,name,note,price,c,image_url,active,sort_order&active=eq.true&order=sort_order.asc";
       const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
       const money = value => Number(value || 0).toLocaleString("fa-IR");
@@ -1056,7 +1056,7 @@ document.getElementById("specialJar").innerHTML = jarSVG("#2e1030", "sp");
 
 /* ---------------- Database (Supabase, with local fallback) ---------------- */
 // برای فعال‌سازی پایگاه داده واقعی، آدرس و کلید پروژه Supabase را اینجا بگذار (راهنما: supabase-setup.sql)
-const CFG = { url: "https://bporqhbfwhvuzfdxfrbi.supabase.co", key: "sb_publishable_wd5snyoGuYYEnLp6URaD6A_ElOkMdnv" };
+const CFG = { url: "https://bporqhbfwhvuzfdxfrbi.supabase.co", key: "sb_publishable_omUQDvSI_P94T_RFhA8mcg_1lkSVFJ0" };
 const OWNER_EMAIL = "leylakazempoor79@gmail.com";   // مالک فروشگاه؛ با این ایمیل وارد شود، پنل مدیریت سفارش‌ها را می‌بیند
 const STATUSES = ["در انتظار تأیید", "در حال آماده‌سازی", "ارسال شد", "تحویل داده شد", "لغو شد"];
 let managerAccess = false;
