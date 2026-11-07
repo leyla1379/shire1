@@ -2372,6 +2372,52 @@ scheduleFrame();
   const canvas = document.getElementById("gl");
   if (canvas) canvas.style.display = "none";
 }
+
+/* ---------------- Payment return (Zibal sends the customer back to the site) ---------------- */
+// callbackUrl is https://shirinkadeh-paris.ir/ so Zibal appends ?success=&status=&trackId=&orderId=.
+// The site asks the Supabase function to verify the payment; the browser params are never trusted.
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const trackId = (params.get("trackId") || "").trim();
+  const fromGateway = /^\d+$/.test(trackId);
+  let payment = params.get("payment");
+  if (!fromGateway && !payment) return;
+  let order = params.get("order") || "";
+  let ref = params.get("ref") || "";
+  const success = params.get("success") === "1" ? "1" : "0";
+  window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+
+  const run = async () => {
+    if (fromGateway) {
+      try {
+        const res = await fetch(CFG.url + "/functions/v1/zibal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: CFG.key },
+          body: JSON.stringify({ action: "verify", trackId, success })
+        });
+        const data = await res.json().catch(() => ({}));
+        payment = data.payment === "success" ? "success" : "failed";
+        order = data.order || "";
+        ref = data.ref || "";
+      } catch (e) {
+        payment = "failed";
+      }
+    }
+    if (payment === "success" && /^SH-[A-Z0-9]{8}$/.test(order)) {
+      state.cart = {}; state.productDiscountApplied = null; renderCart();
+      showModal(head("✅ پرداخت با موفقیت انجام شد") +
+        '<p class="text-sm leading-7">پرداخت شما تأیید شد و سفارش با موفقیت ثبت نهایی شد.</p>' +
+        '<p class="mt-3 text-sm">کد رهگیری سفارش:</p><p class="my-3 rounded-xl bg-honey py-3 text-center text-2xl font-extrabold text-grape" dir="ltr">' + order + '</p>' +
+        (ref ? '<p class="text-xs text-cream/70">کد پیگیری شاپرک: <b dir="ltr">' + ref.replace(/[<>&"]/g, '') + '</b></p>' : '') +
+        '<p class="mt-3 text-xs text-cream/70">برای پیگیری وضعیت سفارش، این کد را در بخش «پیگیری سفارش» وارد کنید. کد رهگیری پستی پس از ارسال کالا در حساب شما ثبت می‌شود.</p>');
+    } else {
+      showModal(head("⚠️ پرداخت تأیید نشد") +
+        '<p class="text-sm leading-7">پرداخت توسط درگاه تأیید نشد یا اطلاعات بازگشت کامل نبود. اگر مبلغ از حسابتان کسر شده، کد سفارش را نگه دارید و با پشتیبانی تماس بگیرید.</p>' +
+        (/^SH-[A-Z0-9]{8}$/.test(order) ? '<p class="my-3 rounded-xl bg-white/5 p-3 text-center font-bold" dir="ltr">' + order + '</p>' : ''));
+    }
+  };
+  if (document.readyState === "complete") run(); else window.addEventListener("load", run);
+})();
 </script>
 
 
@@ -2470,31 +2516,6 @@ scheduleFrame();
   });
 })();
 </script>
-<script>
-(() => {
-  const params = new URLSearchParams(window.location.search);
-  const payment = params.get("payment");
-  if (!payment) return;
-  const order = params.get("order") || "";
-  const ref = params.get("ref") || "";
-  window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
-  window.addEventListener("load", () => {
-    if (payment === "success" && /^SH-[A-Z0-9]{8}$/.test(order)) {
-      state.cart = {}; state.productDiscountApplied = null; renderCart();
-      showModal(head("✅ پرداخت با موفقیت انجام شد") +
-        '<p class="text-sm leading-7">پرداخت شما تأیید شد و سفارش با موفقیت ثبت نهایی شد.</p>' +
-        '<p class="mt-3 text-sm">کد رهگیری سفارش:</p><p class="my-3 rounded-xl bg-honey py-3 text-center text-2xl font-extrabold text-grape" dir="ltr">' + order + '</p>' +
-        (ref ? '<p class="text-xs text-cream/70">کد پیگیری شاپرک: <b dir="ltr">' + ref.replace(/[<>&"]/g, '') + '</b></p>' : '') +
-        '<p class="mt-3 text-xs text-cream/70">برای پیگیری وضعیت سفارش، این کد را در بخش «پیگیری سفارش» وارد کنید. کد رهگیری پستی پس از ارسال کالا در حساب شما ثبت می‌شود.</p>');
-    } else {
-      showModal(head("⚠️ پرداخت تأیید نشد") +
-        '<p class="text-sm leading-7">پرداخت توسط درگاه تأیید نشد یا اطلاعات بازگشت کامل نبود. اگر مبلغ از حسابتان کسر شده، کد سفارش را نگه دارید و با پشتیبانی تماس بگیرید.</p>' +
-        (order ? '<p class="my-3 rounded-xl bg-white/5 p-3 text-center font-bold" dir="ltr">' + order + '</p>' : ''));
-    }
-  });
-})();
-</script>
-
 </body>
 </html>
 <!-- deploy refresh: Supabase publishable key already synced in main; 2026-11-05 -->

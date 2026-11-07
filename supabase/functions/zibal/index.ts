@@ -1,7 +1,13 @@
 // Zibal payment gateway for Shirin Kadeh Paris.
-//   POST  { order_code }  -> creates a Zibal transaction, returns { payment_url }
-//   GET   ?trackId=...    -> Zibal callback: verifies the payment, updates the order,
-//                            then redirects the customer back to the site.
+//   POST  { order_code }                  -> creates a Zibal transaction, returns { payment_url }
+//   POST  { action: "verify", trackId,
+//           success }                     -> called by the site after Zibal sends the customer back
+//                                            to https://shirinkadeh-paris.ir/?trackId=...&success=...
+//                                            Verifies the payment, updates the order and returns
+//                                            { payment, order, ref }.
+//   GET   ?trackId=...                    -> legacy callback (verifies, then redirects to the site).
+// Zibal only accepts a callbackUrl on the domain registered for the merchant, so the callback
+// points at the site (SITE) and not at this function's supabase.co address.
 // The merchant code is read from the ZIBAL_MERCHANT secret, never from site code.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -22,11 +28,17 @@ const json = (body: unknown, status = 200) =>
     headers: { ...CORS, "Content-Type": "application/json", "Cache-Control": "no-store" },
   });
 
-const back = (params: Record<string, string>) =>
-  new Response(null, {
+type Outcome = { payment: "success" | "failed"; order?: string; ref?: string };
+
+const back = (o: Outcome) => {
+  const params: Record<string, string> = { payment: o.payment };
+  if (o.order) params.order = o.order;
+  if (o.payment === "success") params.ref = o.ref || "";
+  return new Response(null, {
     status: 302,
     headers: { Location: `${SITE}/?${new URLSearchParams(params)}`, "Cache-Control": "no-store" },
   });
+};
 
 const db = () =>
   createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
@@ -45,11 +57,10 @@ async function zibal(path: string, payload: Record<string, unknown>) {
 // Site prices are in Toman, Zibal expects Rial.
 const toRial = (toman: number) => Math.round(Number(toman)) * 10;
 
-async function createPayment(req: Request) {
+async function createPayment(body: Record<string, unknown>) {
   const merchant = Deno.env.get("ZIBAL_MERCHANT");
   if (!merchant) return json({ error: "درگاه پرداخت هنوز تنظیم نشده است." }, 500);
 
-  const body = await req.json().catch(() => ({}));
   const code = String(body?.order_code || "").trim();
   if (!ORDER_CODE.test(code)) return json({ error: "کد سفارش نامعتبر است." }, 400);
 
@@ -69,7 +80,8 @@ async function createPayment(req: Request) {
   const data = await zibal("/v1/request", {
     merchant,
     amount,
-    callbackUrl: `${Deno.env.get("SUPABASE_URL")}/functions/v1/zibal`,
+    // Must be on the domain registered in the Zibal panel (shirinkadeh-paris.ir).
+    callbackUrl: `${SITE}/`,
     orderId: code,
     description: `سفارش ${code} - شیرین‌کده پاریس`,
     mobile,
@@ -94,10 +106,9 @@ async function createPayment(req: Request) {
   return json({ payment_url: `${ZIBAL}/start/${trackId}` });
 }
 
-async function handleCallback(url: URL) {
+async function verifyPayment(trackId: string, paidFlag: boolean): Promise<Outcome> {
   const merchant = Deno.env.get("ZIBAL_MERCHANT");
-  const trackId = String(url.searchParams.get("trackId") || "").trim();
-  if (!merchant || !/^\d+$/.test(trackId)) return back({ payment: "failed" });
+  if (!merchant || !/^\d+$/.test(trackId)) return { payment: "failed" };
 
   const supabase = db();
   // Never trust orderId from the query string: look the order up by the stored trackId.
@@ -106,16 +117,15 @@ async function handleCallback(url: URL) {
     .select("code,total,payment_status,payment_ref_id")
     .eq("payment_authority", trackId)
     .maybeSingle();
-  if (!order) return back({ payment: "failed" });
+  if (!order) return { payment: "failed" };
 
   if (order.payment_status === "paid") {
-    return back({ payment: "success", order: order.code, ref: order.payment_ref_id || "" });
+    return { payment: "success", order: order.code, ref: order.payment_ref_id || "" };
   }
 
-  const paidFlag = url.searchParams.get("success") === "1";
   if (!paidFlag) {
     await supabase.from("orders").update({ payment_status: "failed" }).eq("code", order.code).neq("payment_status", "paid");
-    return back({ payment: "failed", order: order.code });
+    return { payment: "failed", order: order.code };
   }
 
   const v = await zibal("/v1/verify", { merchant, trackId: Number(trackId) });
@@ -125,7 +135,7 @@ async function handleCallback(url: URL) {
   if (!verified || !amountOk) {
     console.error("zibal verify failed", v?.result, v?.message, "amountOk=", amountOk);
     await supabase.from("orders").update({ payment_status: "failed" }).eq("code", order.code).neq("payment_status", "paid");
-    return back({ payment: "failed", order: order.code });
+    return { payment: "failed", order: order.code };
   }
 
   const ref = String(v?.refNumber ?? "");
@@ -133,14 +143,28 @@ async function handleCallback(url: URL) {
     .from("orders")
     .update({ payment_status: "paid", payment_provider: "zibal", payment_ref_id: ref })
     .eq("code", order.code);
-  return back({ payment: "success", order: order.code, ref });
+  return { payment: "success", order: order.code, ref };
 }
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
   try {
-    if (req.method === "POST") return await createPayment(req);
-    if (req.method === "GET") return await handleCallback(new URL(req.url));
+    if (req.method === "POST") {
+      const body = await req.json().catch(() => ({}));
+      if (body?.action === "verify") {
+        const outcome = await verifyPayment(String(body?.trackId || "").trim(), String(body?.success) === "1");
+        return json(outcome);
+      }
+      return await createPayment(body);
+    }
+    if (req.method === "GET") {
+      const url = new URL(req.url);
+      const outcome = await verifyPayment(
+        String(url.searchParams.get("trackId") || "").trim(),
+        url.searchParams.get("success") === "1",
+      );
+      return back(outcome);
+    }
     return json({ error: "Method not allowed" }, 405);
   } catch (err) {
     console.error("zibal function error", err);
