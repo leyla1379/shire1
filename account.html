@@ -7,10 +7,9 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex">
 <title>حساب من | شیرین‌کده پاریس</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<link rel="stylesheet" href="vendor/vazirmatn.css">
+<script src="vendor/supabase.js"></script>
+<script src="vendor/sb-proxy.js"></script>
 <style>
 :root{
   --ivory:#fbf6ec;--cream:#f4e9d4;--cream-2:#ead9bb;
@@ -269,11 +268,11 @@ textarea{resize:vertical;min-height:110px}
 
 <div class="page">
 <header class="top"><div class="in">
-  <a class="brand" href="https://leyla1379.github.io/shire1/" aria-label="بازگشت به فروشگاه شیرین‌کده پاریس">
+  <a class="brand" href="https://shirinkadeh-paris.ir/" aria-label="بازگشت به فروشگاه شیرین‌کده پاریس">
     <span>شیرین‌کده پاریس</span>
   </a>
   <div class="acts">
-    <a class="btn sm line" href="https://leyla1379.github.io/shire1/">فروشگاه</a>
+    <a class="btn sm line" href="https://shirinkadeh-paris.ir/">فروشگاه</a>
     <span id="topLogout" class="hidden"></span>
   </div>
 </div></header>
@@ -336,7 +335,7 @@ textarea{resize:vertical;min-height:110px}
 (function(){
 "use strict";
 /* ---------- config (public publishable key, same as storefront) ---------- */
-var CFG={url:"https://bporqhbfwhvuzfdxfrbi.supabase.co",key:"sb_publishable_omUQDvSI_P94T_RFhA8mcg_1lkSVFJ0"};
+var CFG={url:"https://api.shirinkadeh-paris.ir",key:"sb_publishable_omUQDvSI_P94T_RFhA8mcg_1lkSVFJ0"};
 var sb=null;
 try{ if(window.supabase) sb=window.supabase.createClient(CFG.url,CFG.key); }catch(e){ console.error(e); }
 
@@ -556,9 +555,9 @@ function memberCard(){
 }
 function vOverview(p){
   var first=String(displayName()).split(" ")[0];
-  p.innerHTML='<section class="hero" aria-label="خوش‌آمدگویی"><div><span class="eyebrow">حساب مشتری</span><h1>سلام '+esc(first)+'، خوش آمدید</h1><p>سفارش‌ها، رهگیری مرسوله و امتیازهای باشگاه شما در یک جا.</p><div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn gold" href="#orders">سفارش‌های من</a><a class="btn line" href="https://leyla1379.github.io/shire1/">ادامه خرید</a></div></div>'+memberCard()+'</section>'+
+  p.innerHTML='<section class="hero" aria-label="خوش‌آمدگویی"><div><span class="eyebrow">حساب مشتری</span><h1>سلام '+esc(first)+'، خوش آمدید</h1><p>سفارش‌ها، رهگیری مرسوله و امتیازهای باشگاه شما در یک جا.</p><div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn gold" href="#orders">سفارش‌های من</a><a class="btn line" href="https://shirinkadeh-paris.ir/">ادامه خرید</a></div></div>'+memberCard()+'</section>'+
     '<section id="ovStats" aria-label="خلاصه حساب"></section><section id="ovLast"></section>'+
-    '<nav class="quick" aria-label="دسترسی سریع"><a href="#orders">'+ICON.box+'سفارش‌ها</a><a href="#favorites">'+ICON.heart+'علاقه‌مندی‌ها</a><a href="#club">'+ICON.star+'باشگاه</a><a href="#support">'+ICON.chat+'پشتیبانی</a><a href="https://leyla1379.github.io/shire1/">'+ICON.shop+'فروشگاه</a></nav>';
+    '<nav class="quick" aria-label="دسترسی سریع"><a href="#orders">'+ICON.box+'سفارش‌ها</a><a href="#favorites">'+ICON.heart+'علاقه‌مندی‌ها</a><a href="#club">'+ICON.star+'باشگاه</a><a href="#support">'+ICON.chat+'پشتیبانی</a><a href="https://shirinkadeh-paris.ir/">'+ICON.shop+'فروشگاه</a></nav>';
   bindTilt(p);
   paintOverview(p);
 }
@@ -571,7 +570,7 @@ function paintOverview(p){
   var pts=S.points&&Number(S.points.points)||0;
   st.innerHTML='<div class="stats"><div class="stat"><b data-count="'+os.length+'">۰</b><span>کل سفارش‌ها</span></div><div class="stat"><b data-count="'+done+'">۰</b><span>تحویل‌شده</span></div><div class="stat"><b data-count="'+spend+'" data-money style="font-size:18px">۰</b><span>مجموع خرید (بدون لغوشده‌ها)</span></div><div class="stat"><b data-count="'+pts+'">۰</b><span>امتیاز باشگاه</span></div></div>';
   countUp(st);
-  if(!os.length){lt.innerHTML='<div class="card empty">هنوز سفارشی برای این حساب ثبت نشده است.<div style="margin-top:12px"><a class="btn gold" href="https://leyla1379.github.io/shire1/">رفتن به فروشگاه</a></div></div>';return}
+  if(!os.length){lt.innerHTML='<div class="card empty">هنوز سفارشی برای این حساب ثبت نشده است.<div style="margin-top:12px"><a class="btn gold" href="https://shirinkadeh-paris.ir/">رفتن به فروشگاه</a></div></div>';return}
   var o=os[0];
   lt.innerHTML='<div class="card"><div class="sec-h"><h2>آخرین سفارش</h2>'+badge(o.status)+'</div><div class="small muted">کد سفارش: <bdi class="ltr">'+esc(o.code)+'</bdi> · '+esc(dFa(o.created_at))+'</div>'+timeline(o.status)+
     (o.postal_tracking_code?'<p class="ok small" style="font-weight:700">کد رهگیری پستی: <bdi class="ltr">'+esc(o.postal_tracking_code)+'</bdi></p>':'')+
@@ -603,7 +602,7 @@ function paintOrders(p){
     if(String(o.code||"").toLowerCase().indexOf(qq)>-1)return true;
     return itemsOf(o).some(function(i){return norm(itemName(i)).toLowerCase().indexOf(qq)>-1});
   });
-  if(!S.orders.length){el.innerHTML='<div class="empty">هنوز سفارشی ثبت نکرده‌اید.<div style="margin-top:12px"><a class="btn gold" href="https://leyla1379.github.io/shire1/">رفتن به فروشگاه</a></div></div>';return}
+  if(!S.orders.length){el.innerHTML='<div class="empty">هنوز سفارشی ثبت نکرده‌اید.<div style="margin-top:12px"><a class="btn gold" href="https://shirinkadeh-paris.ir/">رفتن به فروشگاه</a></div></div>';return}
   if(!list.length){el.innerHTML='<div class="empty">سفارشی با این فیلتر پیدا نشد.</div>';return}
   el.innerHTML=list.map(function(o){
     return '<a class="ord" href="#orders/'+encodeURIComponent(o.code)+'"><div class="r1"><b>سفارش <bdi class="ltr">'+esc(o.code)+'</bdi></b>'+badge(o.status)+'</div>'+
@@ -899,7 +898,7 @@ var scene={on:false};
 function loadThree(){
   return new Promise(function(res){
     if(window.THREE)return res(true);
-    var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js";s.async=true;
+    var s=document.createElement("script");s.src="vendor/three-r152.min.js";s.async=true;
     s.onload=function(){res(!!window.THREE)};s.onerror=function(){res(false)};document.head.appendChild(s);
   });
 }

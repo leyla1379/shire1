@@ -5,7 +5,7 @@ set -euo pipefail
 
 has_safeguards() {
   local f; f="$(mktemp)"; cat > "$f"
-  grep -q 'const CFG = { url: "https://bporqhbfwhvuzfdxfrbi.supabase.co"' "$f" \
+  grep -qE 'const CFG = \{ url: "https://(bporqhbfwhvuzfdxfrbi\.supabase\.co|api\.shirinkadeh-paris\.ir)"' "$f" \
     && grep -q '__sbReady' "$f" \
     && grep -q 'Mobile layout: the story section' "$f"
 }
