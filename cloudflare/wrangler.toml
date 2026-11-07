@@ -1,0 +1,6 @@
+name = "shirinkadeh-supabase-proxy"
+main = "supabase-proxy.js"
+compatibility_date = "2025-01-01"
+
+# After the Worker is created, attach the custom domain api.shirinkadeh-paris.ir
+# (Workers & Pages -> this Worker -> Settings -> Domains & Routes -> Add -> Custom domain).

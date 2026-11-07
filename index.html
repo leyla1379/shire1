@@ -33,17 +33,11 @@
 </script>
 <title>شیرین کده پاریس — شیره انگور و خرمای اصیل</title>
 <meta name="description" content="فروشگاه شیرین کده پاریس؛ عرضه شیره انگور، شیره خرما و شیره‌های سنتی با تجربه‌ای سه‌بعدی." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script>
-tailwind.config = { theme: { extend: {
-  colors: { grape: "#2a0f33", plum: "#4b1d52", amber: "#e0a030", honey: "#f3c76a", cream: "#fbf0dc", date: "#5a2e14" },
-  fontFamily: { sans: ["Vazirmatn", "sans-serif"] },
-}}};
-</script>
+<link rel="stylesheet" href="vendor/vazirmatn.css">
+<link rel="stylesheet" href="vendor/tailwind.css">
+<script src="vendor/sb-proxy.js"></script>
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/ScrollTrigger.min.js" defer></script>
 <style>
   html, body { background: #1e0a26; scroll-behavior: smooth; }
   body { font-family: Vazirmatn, Tahoma, sans-serif; color: #fbf0dc; overflow-x: hidden; }
@@ -656,7 +650,7 @@ tailwind.config = { theme: { extend: {
       </div>
       <div id="pills" class="mt-8 flex flex-wrap justify-center gap-2"></div>
       <!-- Static product list: shown even if every script, CDN or database call fails. JS replaces it once live data loads. -->
-      <div id="grid" data-static-products="6" class="mt-8 grid grid-cols-1 gap-4"><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=2" style="display:flex;text-decoration:none;color:inherit"><img src="https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/2-1792769672798.webp" alt="شیره انگور سفید سنتی" loading="lazy" width="800" height="800" style="width:100%;height:180px;object-fit:contain;border-radius:12px"><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سفید سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">روشن و ملایم، 1 کیلوگرم</p><span class="mt-auto pt-3 text-sm font-bold">۸۲۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792758389895" style="display:flex;text-decoration:none;color:inherit"><img src="https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/1792758389895-1792770614830.webp" alt="شیره انگور سیاه سنتی" loading="lazy" width="800" height="800" style="width:100%;height:180px;object-fit:contain;border-radius:12px"><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سیاه سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">وزن 1 کیلوگرم</p><span class="mt-auto pt-3 text-sm font-bold">۸۲۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792758941561" style="display:flex;text-decoration:none;color:inherit"><div class="py-12 text-center text-4xl">🍯</div><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سیاه سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">وزن 500 گرم</p><span class="mt-auto pt-3 text-sm font-bold">۴۱۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792757877689" style="display:flex;text-decoration:none;color:inherit"><img src="https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/1792757877689-1792770445216.webp" alt="شیره انگور سفید سنتی" loading="lazy" width="800" height="800" style="width:100%;height:180px;object-fit:contain;border-radius:12px"><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سفید سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">500 گرمی</p><span class="mt-auto pt-3 text-sm font-bold">۴۱۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792780130028" style="display:flex;text-decoration:none;color:inherit"><div class="py-12 text-center text-4xl">🍯</div><h3 class="mt-3 text-base font-bold text-honey">معجون چهار مغز</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">وزن 400 گرم</p><span class="mt-auto pt-3 text-sm font-bold">۵۹۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792949881464" style="display:flex;text-decoration:none;color:inherit"><div class="py-12 text-center text-4xl">🍯</div><h3 class="mt-3 text-base font-bold text-honey">ترافل خرمایی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">باکس 22 عددی</p><span class="mt-auto pt-3 text-sm font-bold">۶۹۰٬۰۰۰ تومان</span></a></div>
+      <div id="grid" data-static-products="6" class="mt-8 grid grid-cols-1 gap-4"><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=2" style="display:flex;text-decoration:none;color:inherit"><img src="https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/2-1792769672798.webp" alt="شیره انگور سفید سنتی" loading="lazy" width="800" height="800" style="width:100%;height:180px;object-fit:contain;border-radius:12px"><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سفید سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">روشن و ملایم، 1 کیلوگرم</p><span class="mt-auto pt-3 text-sm font-bold">۸۲۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792758389895" style="display:flex;text-decoration:none;color:inherit"><img src="https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/1792758389895-1792770614830.webp" alt="شیره انگور سیاه سنتی" loading="lazy" width="800" height="800" style="width:100%;height:180px;object-fit:contain;border-radius:12px"><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سیاه سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">وزن 1 کیلوگرم</p><span class="mt-auto pt-3 text-sm font-bold">۸۲۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792758941561" style="display:flex;text-decoration:none;color:inherit"><div class="py-12 text-center text-4xl">🍯</div><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سیاه سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">وزن 500 گرم</p><span class="mt-auto pt-3 text-sm font-bold">۴۱۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792757877689" style="display:flex;text-decoration:none;color:inherit"><img src="https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/1792757877689-1792770445216.webp" alt="شیره انگور سفید سنتی" loading="lazy" width="800" height="800" style="width:100%;height:180px;object-fit:contain;border-radius:12px"><h3 class="mt-3 text-base font-bold text-honey">شیره انگور سفید سنتی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">500 گرمی</p><span class="mt-auto pt-3 text-sm font-bold">۴۱۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792780130028" style="display:flex;text-decoration:none;color:inherit"><div class="py-12 text-center text-4xl">🍯</div><h3 class="mt-3 text-base font-bold text-honey">معجون چهار مغز</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">وزن 400 گرم</p><span class="mt-auto pt-3 text-sm font-bold">۵۹۰٬۰۰۰ تومان</span></a><a class="card flex flex-col rounded-2xl p-3" href="product.html?id=1792949881464" style="display:flex;text-decoration:none;color:inherit"><div class="py-12 text-center text-4xl">🍯</div><h3 class="mt-3 text-base font-bold text-honey">ترافل خرمایی</h3><p class="mt-1 text-[11px] leading-5 text-cream/70">باکس 22 عددی</p><span class="mt-auto pt-3 text-sm font-bold">۶۹۰٬۰۰۰ تومان</span></a></div>
     </div>
   </section>
 
@@ -714,15 +708,15 @@ tailwind.config = { theme: { extend: {
       const pills = document.getElementById("pills");
       if (!grid) return;
       const fallbackRows = [
-        {id:"2",cat:"انگور",name:"شیره انگور سفید سنتی",note:"روشن و ملایم، 1 کیلوگرم",price:820000,image_url:"https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/2-1792769672798.webp"},
-        {id:"1792758389895",cat:"انگور",name:"شیره انگور سیاه سنتی",note:"وزن 1 کیلوگرم",price:820000,image_url:"https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/1792758389895-1792770614830.webp"},
+        {id:"2",cat:"انگور",name:"شیره انگور سفید سنتی",note:"روشن و ملایم، 1 کیلوگرم",price:820000,image_url:"https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/2-1792769672798.webp"},
+        {id:"1792758389895",cat:"انگور",name:"شیره انگور سیاه سنتی",note:"وزن 1 کیلوگرم",price:820000,image_url:"https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/1792758389895-1792770614830.webp"},
         {id:"1792758941561",cat:"انگور",name:"شیره انگور سیاه سنتی",note:"وزن 500 گرم",price:410000,image_url:null},
-        {id:"1792757877689",cat:"انگور",name:"شیره انگور سفید سنتی",note:"500 گرمی",price:410000,image_url:"https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/1792757877689-1792770445216.webp"},
+        {id:"1792757877689",cat:"انگور",name:"شیره انگور سفید سنتی",note:"500 گرمی",price:410000,image_url:"https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/1792757877689-1792770445216.webp"},
         {id:"1792780130028",cat:"سایر",name:"معجون چهار مغز",note:"وزن 400 گرم",price:590000,image_url:null},
         {id:"1792949881464",cat:"سایر",name:"ترافل خرمایی",note:"باکس 22 عددی",price:690000,image_url:null}
       ];
       const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwb3JxaGJmd2h2dXpmZHhmcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2OTcxNzQsImV4cCI6MjEwOTI3MzE3NH0.yxll09SDf7P-ufKf5fSubfVq6aleQAnXm18DAnbF5ic";
-      const endpoint = "https://bporqhbfwhvuzfdxfrbi.supabase.co/rest/v1/product_catalog?select=id,cat,name,note,price,c,image_url,active,sort_order&active=eq.true&order=sort_order.asc";
+      const endpoint = "https://api.shirinkadeh-paris.ir/rest/v1/product_catalog?select=id,cat,name,note,price,c,image_url,active,sort_order&active=eq.true&order=sort_order.asc";
       const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
       const money = value => Number(value || 0).toLocaleString("fa-IR");
       const render = rows => {
@@ -783,7 +777,7 @@ tailwind.config = { theme: { extend: {
 <script>
 /* Load supabase-js without ever blocking the page: local copy first, CDN second, 4s limit each. */
 window.__sbReady = new Promise(function (resolve) {
-  var sources = ["vendor/supabase.js", "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"], i = 0, done = false;
+  var sources = ["vendor/supabase.js"], i = 0, done = false;
   function ready() { return !!(window.supabase && window.supabase.createClient); }
   function finish(v) { if (!done) { done = true; resolve(v); } }
   function next() {
@@ -800,21 +794,9 @@ window.__sbReady = new Promise(function (resolve) {
   next();
 });
 </script>
-<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
 <script type="module">
 await Promise.race([window.__sbReady, new Promise(function (r) { setTimeout(r, 9000); })]);
-/* Supabase CDN fallback: keep the storefront connected if jsDelivr is blocked or unavailable. */
-if (!window.supabase?.createClient) {
-  try {
-    const supabaseModule = await Promise.race([
-      import("https://esm.sh/@supabase/supabase-js@2"),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase CDN timeout")), 4000))
-    ]);
-    if (supabaseModule?.createClient) window.supabase = supabaseModule;
-  } catch (supabaseLoadError) {
-    console.error("بارگذاری کتابخانه Supabase ناموفق بود:", supabaseLoadError);
-  }
-}
 if (window.gsap && window.ScrollTrigger) {
   try { window.gsap.registerPlugin(window.ScrollTrigger); }
   catch (animationError) { console.warn("افزونه انیمیشن فعال نشد؛ فروشگاه بدون آن ادامه می‌دهد.", animationError); }
@@ -1067,7 +1049,7 @@ document.getElementById("specialJar").innerHTML = jarSVG("#2e1030", "sp");
 
 /* ---------------- Database (Supabase, with local fallback) ---------------- */
 // برای فعال‌سازی پایگاه داده واقعی، آدرس و کلید پروژه Supabase را اینجا بگذار (راهنما: supabase-setup.sql)
-const CFG = { url: "https://bporqhbfwhvuzfdxfrbi.supabase.co", key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwb3JxaGJmd2h2dXpmZHhmcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2OTcxNzQsImV4cCI6MjEwOTI3MzE3NH0.yxll09SDf7P-ufKf5fSubfVq6aleQAnXm18DAnbF5ic" };
+const CFG = { url: "https://api.shirinkadeh-paris.ir", key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwb3JxaGJmd2h2dXpmZHhmcmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2OTcxNzQsImV4cCI6MjEwOTI3MzE3NH0.yxll09SDf7P-ufKf5fSubfVq6aleQAnXm18DAnbF5ic" };
 const OWNER_EMAIL = "leylakazempoor79@gmail.com";   // مالک فروشگاه؛ با این ایمیل وارد شود، پنل مدیریت سفارش‌ها را می‌بیند
 const STATUSES = ["در انتظار تأیید", "در حال آماده‌سازی", "ارسال شد", "تحویل داده شد", "لغو شد"];
 let managerAccess = false;
@@ -1337,10 +1319,10 @@ async track(code) {
 refreshWeeklyOfferDiscount();
 
 const emergencyProductCatalogue = [
-  {id:"2",cat:"انگور",name:"شیره انگور سفید سنتی",note:"روشن و ملایم، 1 کیلوگرم",price:820000,c:"#b9701c",image_url:"https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/2-1792769672798.webp",active:true,sort_order:2},
-  {id:"1792758389895",cat:"انگور",name:"شیره انگور سیاه سنتی",note:"وزن 1 کیلوگرم",price:820000,c:"#4a1a2c",image_url:"https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/1792758389895-1792770614830.webp",active:true,sort_order:2},
+  {id:"2",cat:"انگور",name:"شیره انگور سفید سنتی",note:"روشن و ملایم، 1 کیلوگرم",price:820000,c:"#b9701c",image_url:"https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/2-1792769672798.webp",active:true,sort_order:2},
+  {id:"1792758389895",cat:"انگور",name:"شیره انگور سیاه سنتی",note:"وزن 1 کیلوگرم",price:820000,c:"#4a1a2c",image_url:"https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/1792758389895-1792770614830.webp",active:true,sort_order:2},
   {id:"1792758941561",cat:"انگور",name:"شیره انگور سیاه سنتی",note:"وزن 500 گرم",price:410000,c:"#4a1a2c",image_url:null,active:true,sort_order:3},
-  {id:"1792757877689",cat:"انگور",name:"شیره انگور سفید سنتی",note:"500 گرمی",price:410000,c:"#4a1a2c",image_url:"https://bporqhbfwhvuzfdxfrbi.supabase.co/storage/v1/object/public/product-images/1792757877689-1792770445216.webp",active:true,sort_order:4},
+  {id:"1792757877689",cat:"انگور",name:"شیره انگور سفید سنتی",note:"500 گرمی",price:410000,c:"#4a1a2c",image_url:"https://api.shirinkadeh-paris.ir/storage/v1/object/public/product-images/1792757877689-1792770445216.webp",active:true,sort_order:4},
   {id:"1792780130028",cat:"سایر",name:"معجون چهار مغز",note:"وزن 400 گرم",price:590000,c:"#4a1a2c",image_url:null,active:true,sort_order:5},
   {id:"1792949881464",cat:"سایر",name:"ترافل خرمایی",note:"باکس 22 عددی",price:690000,c:"#4a1a2c",image_url:null,active:true,sort_order:6}
 ];

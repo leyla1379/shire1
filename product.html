@@ -4,9 +4,9 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="مشاهده تصاویر، توضیحات و قیمت محصول در فروشگاه شیرین‌کده پاریس.">
 <title>جزئیات محصول | شیرین‌کده پاریس</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="vendor/vazirmatn.css">
+<link rel="stylesheet" href="vendor/tailwind.css">
+<script src="vendor/sb-proxy.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#542354,#1e0a26 60%);color:#fbf0dc;font-family:Vazirmatn,Tahoma,sans-serif;min-height:100vh}
 .gold{color:#f3c76a}.panel{background:rgba(255,240,220,.07);border:1px solid rgba(243,199,106,.22);backdrop-filter:blur(14px);border-radius:24px}
@@ -39,7 +39,7 @@
 </main>
 <footer class="mt-10 border-t border-amber-100/10 py-6 text-center text-xs text-amber-50/50">© شیرین‌کده پاریس</footer>
 <script>
-const CFG={url:"https://bporqhbfwhvuzfdxfrbi.supabase.co",key:"sb_publishable_wd5snyoGuYYEnLp6URaD6A_ElOkMdnv"};
+const CFG={url:"https://api.shirinkadeh-paris.ir",key:"sb_publishable_wd5snyoGuYYEnLp6URaD6A_ElOkMdnv"};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>Number(n||0).toLocaleString("fa-IR");
