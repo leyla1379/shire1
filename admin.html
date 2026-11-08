@@ -6,9 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="dark">
 <title>پنل مدیریت شیرین‌کده پاریس</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/vazirmatn.css">
 <style>
 :root{
   --plum:#1f0a1c;--aub:#33122f;--aub2:#4a1a44;--gold:#dcb870;--gold2:#f2d9a0;--cream:#f7ecd9;--caramel:#b8793e;
@@ -172,8 +170,8 @@ table.t th,table.t td{text-align:right;padding:.55rem .6rem;border-bottom:1px so
 <dialog id="dlgC"><form method="dialog" id="cForm"><h3 id="cT"></h3><p id="cB" class="muted"></p><div id="cReqWrap" hidden class="field"><label for="cReq" id="cReqL"></label><input class="inp" id="cReq" dir="ltr" autocomplete="off"></div><div class="row" style="margin-top:1rem"><button class="btn" value="no" type="submit">انصراف</button><button class="btn danger" id="cOk" value="yes" type="submit">تأیید</button></div></form></dialog>
 <div id="toasts" role="status" aria-live="polite"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="vendor/three-r128.min.js" defer></script>
+<script src="vendor/supabase.js" defer></script>
 <script defer>
 "use strict";
 /* ───────── پیکربندی (فقط کلید عمومی؛ هیچ کلید service_role در این فایل نیست) ───────── */
