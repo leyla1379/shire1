@@ -33,17 +33,10 @@
 </script>
 <title>شیرین کده پاریس — شیره انگور و خرمای اصیل</title>
 <meta name="description" content="فروشگاه شیرین کده پاریس؛ عرضه شیره انگور، شیره خرما و شیره‌های سنتی با تجربه‌ای سه‌بعدی." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script>
-tailwind.config = { theme: { extend: {
-  colors: { grape: "#2a0f33", plum: "#4b1d52", amber: "#e0a030", honey: "#f3c76a", cream: "#fbf0dc", date: "#5a2e14" },
-  fontFamily: { sans: ["Vazirmatn", "sans-serif"] },
-}}};
-</script>
+<link rel="stylesheet" href="vendor/vazirmatn.css">
+<link rel="stylesheet" href="vendor/tailwind.css">
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/ScrollTrigger.min.js" defer></script>
 <style>
   html, body { background: #1e0a26; scroll-behavior: smooth; }
   body { font-family: Vazirmatn, Tahoma, sans-serif; color: #fbf0dc; overflow-x: hidden; }
@@ -786,7 +779,7 @@ tailwind.config = { theme: { extend: {
 <script>
 /* Load supabase-js without ever blocking the page: local copy first, CDN second, 4s limit each. */
 window.__sbReady = new Promise(function (resolve) {
-  var sources = ["vendor/supabase.js", "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"], i = 0, done = false;
+  var sources = ["vendor/supabase.js"], i = 0, done = false;
   function ready() { return !!(window.supabase && window.supabase.createClient); }
   function finish(v) { if (!done) { done = true; resolve(v); } }
   function next() {
@@ -803,21 +796,9 @@ window.__sbReady = new Promise(function (resolve) {
   next();
 });
 </script>
-<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
 <script type="module">
 await Promise.race([window.__sbReady, new Promise(function (r) { setTimeout(r, 9000); })]);
-/* Supabase CDN fallback: keep the storefront connected if jsDelivr is blocked or unavailable. */
-if (!window.supabase?.createClient) {
-  try {
-    const supabaseModule = await Promise.race([
-      import("https://esm.sh/@supabase/supabase-js@2"),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase CDN timeout")), 4000))
-    ]);
-    if (supabaseModule?.createClient) window.supabase = supabaseModule;
-  } catch (supabaseLoadError) {
-    console.error("بارگذاری کتابخانه Supabase ناموفق بود:", supabaseLoadError);
-  }
-}
 if (window.gsap && window.ScrollTrigger) {
   try { window.gsap.registerPlugin(window.ScrollTrigger); }
   catch (animationError) { console.warn("افزونه انیمیشن فعال نشد؛ فروشگاه بدون آن ادامه می‌دهد.", animationError); }
@@ -2177,9 +2158,34 @@ document.addEventListener("submit", async (e) => {
   }
 });
 
+/* ---------------- Scroll choreography: independent of the 3D scene, so page animations still run if three.js fails to load ---------------- */
+const S = { ribbon: 0, cluster: 0, fruits: 0, camZ: 9, camY: 2.2, tilt: 0 };
+try {
+  if (window.gsap) {
+    gsap.to(S, { fruits: .35, ribbon: .25, duration: 2.2, ease: "power3.out", delay: .2 });
+    gsap.from("#heroText > *", { y: 40, opacity: 0, stagger: .12, duration: 1, ease: "power3.out" });
+    if (window.ScrollTrigger) {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: "#home", start: "top top", endTrigger: "#stage", end: "bottom bottom", scrub: 1 } });
+      tl.to(S, { fruits: 1, ribbon: 1, duration: 1, ease: "none" }, 0)
+        .to(S, { cluster: 1, duration: .6, ease: "back.out(1.6)" }, .3)
+        .to(S, { camZ: 7.2, camY: 2.6, tilt: 1, duration: 1, ease: "power1.inOut" }, 0)
+        .to("#heroText", { y: -120, opacity: 0, duration: .4 }, 0)
+        .to("#stageText", { opacity: 1, duration: .3 }, .6);
+      gsap.to("#gl", { opacity: .3, scrollTrigger: { trigger: "#menu", start: "top 80%", end: "top 20%", scrub: true } });
+      gsap.utils.toArray(".reveal").forEach((el) => gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 88%" } }));
+    }
+  }
+} catch (animationError) {
+  console.warn("انیمیشن‌های اسکرول فعال نشدند؛ فروشگاه بدون آن‌ها ادامه می‌دهد.", animationError);
+}
+
 /* ---------------- Three.js scene: optional enhancement; keep storefront functional if WebGL fails ---------------- */
 try {
-const THREE = await import("three");
+/* 15s limit: a stalled download must never block the code below (e.g. the payment-return handler). */
+const THREE = await Promise.race([
+  import("three"),
+  new Promise((_, reject) => setTimeout(() => reject(new Error("three.js load timeout")), 15000))
+]);
 const mobile = matchMedia("(max-width: 768px)").matches;
 const canvas = document.getElementById("gl");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: true });
@@ -2304,21 +2310,7 @@ function layout() {
 }
 addEventListener("resize", layout); layout();
 
-/* Scroll choreography */
-const S = { ribbon: 0, cluster: 0, fruits: 0, camZ: 9, camY: 2.2, tilt: 0 };
-gsap.to(S, { fruits: .35, ribbon: .25, duration: 2.2, ease: "power3.out", delay: .2 });
-gsap.from("#heroText > *", { y: 40, opacity: 0, stagger: .12, duration: 1, ease: "power3.out" });
-
-const tl = gsap.timeline({ scrollTrigger: { trigger: "#home", start: "top top", endTrigger: "#stage", end: "bottom bottom", scrub: 1 } });
-tl.to(S, { fruits: 1, ribbon: 1, duration: 1, ease: "none" }, 0)
-  .to(S, { cluster: 1, duration: .6, ease: "back.out(1.6)" }, .3)
-  .to(S, { camZ: 7.2, camY: 2.6, tilt: 1, duration: 1, ease: "power1.inOut" }, 0)
-  .to("#heroText", { y: -120, opacity: 0, duration: .4 }, 0)
-  .to("#stageText", { opacity: 1, duration: .3 }, .6);
-
-gsap.to("#gl", { opacity: .3, scrollTrigger: { trigger: "#menu", start: "top 80%", end: "top 20%", scrub: true } });
-gsap.utils.toArray(".reveal").forEach((el) => gsap.to(el, { opacity: 1, y: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 88%" } }));
-
+/* (scroll choreography moved above, before this try block) */
 const mouse = { x: 0, y: 0 };
 addEventListener("pointermove", (e) => { mouse.x = e.clientX / innerWidth - .5; mouse.y = e.clientY / innerHeight - .5; });
 
